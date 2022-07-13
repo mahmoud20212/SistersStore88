@@ -1,0 +1,215 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block content %}
+<!-- Start Breadcrumb -->
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            المفضلة
+        </span>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<!-- Product -->
+<section dir="rtl" class="bg0 p-t-23 p-b-140">
+    <div class="container">
+
+        <div class="p-b-10 mb-5">
+            <h3 class="ltext-103 cl5">المفضلة</h3>
+        </div>
+
+        {% if not products %}
+            <div class="text-center p-4 comment">
+                <h5 class="mb-0">المفضلة فارغة.</h5>
+            </div>
+        {% endif %}
+        
+        {% if products %}
+            <div dir="rtl" class="row isotope-grid">
+                {% for product in products %}
+
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                    <!-- Block2 -->
+                    <div class="block2">
+                        <div class="block2-pic hov-img0">
+                            {% if product.image %}
+                            <img height="300px" style="object-fit: cover" src="{{product.image.url}}" alt="IMG-PRODUCT" />
+                            {% endif %}
+
+                            <a href="#"
+                                class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal{{forloop.counter}}">
+                                عرض سريع
+                            </a>
+                        </div>
+
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l">
+                                <a href="{% url 'product_detail' product.pk %}"
+                                    class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    {{product.name}}
+                                </a>
+                                <span class="stext-105 cl3">
+                                    {% if product.is_discount %}
+                                    <strong><span class="text-success ml-2">₪{{product.is_discount}}</span>
+                                        <del class="text-danger">₪{{product.price}}</del></strong>
+                                    {% else %}
+                                    <strong>₪{{product.price}}</strong>
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div class="block2-txt-child2 flex-r p-t-3">
+                                {% if product.status %} {% if product.status == 'New' %}
+                                <span class="badge bg-primary ml-4">جديد</span>
+                                {% elif product.status == 'Sale' %}
+                                <span class="badge bg-success ml-4">تخفيض السعر</span>
+                                {% else %}
+                                <span class="badge bg-danger ml-4">انتهى</span>
+                                {% endif %} {% endif %}
+                                <div class="btn-addwish-b2 dis-block pos-relative js-addedwish-b2">
+                                    <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{% static 'images/icons/icon-heart-02.png' %}" alt="ICON" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% include 'store/pagination.html' with page=products %}
+        {% endif %}
+    </div>
+</section>
+
+{% for product in products %}
+<!-- Modal{{forloop.counter}} -->
+<div class="wrap-modal1 js-modal{{forloop.counter}} p-t-60 p-b-20">
+    <div class="overlay-modal1 js-hide-modal{{forloop.counter}}"></div>
+
+    <div class="container">
+        <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+            <button class="how-pos3 hov3 trans-04 js-hide-modal{{forloop.counter}}">
+                <img src="{% static 'images/icons/icon-close.png' %}" alt="CLOSE" />
+            </button>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-7 p-b-30">
+                    <div class="p-l-25 p-r-30 p-lr-0-lg">
+                        <div class="wrap-slick3 flex-sb flex-w">
+                            <div class="wrap-slick3-dots"></div>
+                            <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+                            <div class="slick3 gallery-lb">
+                                {% for img in product.photos.all %}
+                                    <div class="item-slick3" data-thumb="{{img.image.url}}">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img style="height: 100%; min-height: 500px; object-fit:cover;" src="{{img.image.url}}" alt="IMG-PRODUCT" />
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                href="{{img.image.url}}">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div dir="rtl" class="col-md-6 col-lg-5 p-b-30">
+                    <div class="p-r-50 p-t-5 p-lr-0-lg">
+                        <h4 class="mtext-105 cl2 js-name-detail p-b-14">
+                            {{product.name}}
+                            {% if product.status %}
+                                {% if product.status == 'New' %}
+                                    <span class="badge bg-primary mr-2">جديد</span>
+                                {% elif product.status == 'Sale' %}
+                                    <span class="badge bg-success mr-2">تخفيض السعر</span>
+                                {% else %}
+                                    <span class="badge bg-danger mr-2">انتهى</span>
+                                {% endif %}
+                            {% endif %}
+                        </h4>
+                        <span class="mtext-106 cl2">
+                            {% if product.is_discount %}
+                                <strong><span class="text-success ml-2">₪{{product.is_discount}}</span> <del class="text-danger">₪{{product.price}}</del></strong>
+                            {% else %}
+                                <strong>₪{{product.price}}</strong>
+                            {% endif %}
+                        </span>
+
+                        <p style="border-bottom: 1px solid #ccc;" class="stext-102 cl3 p-t-23 border-bottom pb-3">
+                            {{product.description}}
+                        </p>
+
+                        <!--  -->
+                        <div class="p-t-33">
+                            <div class="flex-w flex-r-m p-b-10 mt-3">
+                                <div class="size-203 flex-c-m respon6">الألوان:</div>
+
+                                <div class="size-204 respon6-next">
+                                    <ul>
+                                        {% for color in product.color.all %}
+                                        <li>♦ {{color}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 flex-c-m respon6">المقاسات:</div>
+
+                                <div class="size-204 respon6-next">
+                                    <ul>
+                                        {% for size in product.size.all %}
+                                        <li>♦ {{size}}</li>
+                                        {% endfor %}
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="text-center mt-5">
+                                <a href="{% url 'product_detail' product.pk %}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mt-3">
+                                    انتقل الى تفاصيل المنتج
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Icon -->
+                        <div style="border-top: 1px solid #ccc;" class="mt-4 text-center pt-4">
+                            <a href="#" class="fs-24 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100 text-center" data-tooltip="Facebook">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+
+                            <a href="#" class="fs-24 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100 text-center" data-tooltip="Twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                            <a href="#" class="fs-24 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100 text-center" data-tooltip="Instagram">
+                                <i class="fa fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script>
+    /* [ Show modal1 ] */
+    {% for product in products %}
+        $('.js-show-modal{{forloop.counter}}').on('click',function(e){
+            e.preventDefault();
+            $('.js-modal{{forloop.counter}}').addClass('show-modal1');
+        });
+
+        $('.js-hide-modal{{forloop.counter}}').on('click',function(){
+            $('.js-modal{{forloop.counter}}').removeClass('show-modal1');
+        });
+    {% endfor %}
+</script>
+{% endblock content %}

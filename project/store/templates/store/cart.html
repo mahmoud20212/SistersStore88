@@ -1,0 +1,255 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block content %}
+
+<!-- breadcrumb -->
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            عربة التسوق
+        </span>
+    </div>
+</div>
+
+{% if items %}
+<!-- Shoping Cart -->
+<div dir="rtl" class="bg0 p-t-75 p-b-85">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+                <div class="m-l-25 m-r--38 m-lr-0-xl">
+                    <div class="wrap-table-shopping-cart">
+                        <table class="table-shopping-cart">
+                            <tr class="table_head">
+                                <th class="text-center">المنتج</th>
+                                <th class="text-center"></th>
+                                <th class="text-center">السعر</th>
+                                <th class="text-center">الكمية</th>
+                                <th class="text-center">إجمالي السعر</th>
+                            </tr>
+                            {% for item in items %}
+                            <tr class="table_row">
+                                <td class="column-1">
+                                    <div class="how-itemcart1">
+                                        <img src="{{item.product.image.url}}" alt="IMG">
+                                    </div>
+                                </td>
+                                <td class="column-2 text-center"> {{item.product.name}} <br> ({{item.color}}) <br>({{item.size}})</td>
+                                <td class="column-3">{% if item.product.is_discount %}₪{{item.product.is_discount}}{% else %}₪{{item.product.price}}{% endif %}</td>
+                                <td class="column-4">
+                                    <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                        <div  data-size="{{item.size}}" data-color="{{item.color}}" data-product="{{item.product.id}}" data-action="remove" class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m update-cart">
+                                            <i class="fs-16 zmdi zmdi-minus"></i>
+                                        </div>
+
+                                        <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="{{item.quantity}}">
+
+                                        <div data-size="{{item.size}}" data-color="{{item.color}}" data-product="{{item.product.id}}" data-action="add" class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m update-cart">
+                                            <i class="fs-16 zmdi zmdi-plus"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="column-5">₪{{item.get_total}}</td>
+                                <td class="column-5"><button data-size="{{item.size}}" data-color="{{item.color}}" data-product="{{item.product.id}}" data-action="delete" class="btn btn-danger update-cart"><i class="fa-solid fa-trash-can"></i></button></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+
+                    <form method="POST" action="{% url 'coupon_apply' %}" class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+                        {% csrf_token %}
+                        <div class="flex-w flex-m m-r-20 m-tb-5">
+                            <input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-tb-5 ml-2" type="text" name="coupon" placeholder="كوبون">
+                                
+                            <button type="submit" class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+                                تفعيل الكوبون
+                            </button>
+                        </div>
+
+                        <a href="{% url 'cart' %}" class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+                            تحديث عربة التسوق
+                        </a>
+                        <p class="alert alert-info w-100">
+                            <i class="fa-solid fa-circle-info"></i> تأكد من تفعيل الكوبون مع كل طلب إذا كان لديك كوبون.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+                <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+                    <h4 class="mtext-109 cl2 p-b-30">
+                         عربة التسوق
+                    </h4>
+
+                    <div class="flex-w flex-t bor12 p-b-13">
+                        <div class="size-208">
+                            <span class="stext-110 cl2">
+                                عدد المنتجات:
+                            </span>
+                        </div>
+
+                        <div class="size-209">
+                            <span class="mtext-110 cl2">
+                                {{order.get_cart_items}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- <div class="flex-w flex-t bor12 p-t-15 p-b-30">
+                        <div class="size-208 w-full-ssm">
+                            <span class="stext-110 cl2">
+                                الشحن:
+                            </span>
+                        </div>
+
+                        <div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
+                            <p class="stext-111 cl6 p-t-2">
+                                لا توجد طرق شحن متاحة. يرجى التحقق مرة أخرى من عنوانك ، أو الاتصال بنا إذا كنت بحاجة إلى أي مساعدة.
+                            </p>
+                            
+                            <div class="p-t-15">
+                                <span class="stext-112 cl8">
+                                    احسب الشحن
+                                </span>
+
+                                <div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
+                                    <select class="js-select2" name="country">
+                                        <option>حدد الدولة...</option>
+                                        <option>فلسطين</option>
+                                    </select>
+                                    <div class="dropDownSelect2"></div>
+                                </div>
+
+                                <div class="bor8 bg0 m-b-12">
+                                    <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="state" placeholder="الحي...">
+                                </div>        
+                            </div>
+                        </div>
+                    </div> -->
+                    
+                    {% if order.coupon and order.discount_amount and order.coupon.active %}
+                        <div class="row alert alert-success mt-3 mx-1">
+                            <div class="size-208 col">
+                                <span class="mtext-101 cl2">
+                                    الكوبون:
+                                </span>
+                            </div>
+                            <div class="size-209 p-t-1 col">
+                                <span class="mtext-110 cl2">
+                                    {{order.coupon}}
+                                </span>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="size-208 col">
+                                <span class="mtext-101 cl2">
+                                الخصم:
+                                </span>
+                            </div>
+
+                            <div class="size-209 p-t-1 col">
+                                <span class="mtext-110 cl2">
+                                    %{{order.coupon.discount}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row alert alert-danger mt-3 mx-1">
+                            <div class="size-208 col">
+                                <span class="cl2">
+                                مقدار الخصم:
+                                </span>
+                            </div>
+        
+                            <div class="size-209 p-t-1 col">
+                                <span class="mtext-110 cl2">
+                                   - ₪{{order.discount_amount}}
+                                </span>
+                            </div>
+                        </div>
+                        <p class="bor12"></p>
+                    {% endif %}
+
+                    <div class="flex-w flex-t p-t-27 p-b-33">
+                        <div class="size-208">
+                            <span class="mtext-101 cl2">
+                                السعر الكلي:
+                            </span>
+                        </div>
+
+                        <div class="size-209 p-t-1">
+                            <span class="mtext-110 cl2">
+                                ₪{{order.get_cart_total}}
+                            </span>
+                        </div>
+                    </div>
+                    <p class="bor12"></p>
+                    <a href="{% url 'checkout' %}" class="btn btn-info mt-3 w-100">
+                        طرق الدفع 
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var updateBtns = document.getElementsByClassName('update-cart');
+    for(var i = 0; i < updateBtns.length; i++){
+        updateBtns[i].addEventListener('click', function(){
+            var productId = this.dataset.product
+            var action = this.dataset.action
+            var size = this.dataset.size
+            var color = this.dataset.color
+
+            if (user === 'AnonymousUser'){
+                addCookieItem()
+            }else{
+                updateUserOrder(productId, size, color, action)
+            }
+        })
+    }
+
+    function addCookieItem(productId, size, color, action){
+        console.log('not log in')
+    }
+
+
+
+    function updateUserOrder(productId, size, color, action){
+        var url = '/update_cart/'
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                'productId': productId,
+                'size': size,
+                'color': color,
+                'action': action,
+            })
+        })
+        .then((response) =>{
+            return response.json()
+        })
+        .then((data) =>{
+            location.reload()
+        })
+    }
+
+</script>
+{% else %}
+<div dir="rtl" class="bg0 p-t-75 p-b-85">
+    <div class="container">
+        <div class="text-center p-4 comment">
+            <h5 class="mb-0">عربة التسوق فارغة.</h5>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}

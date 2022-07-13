@@ -1,0 +1,41 @@
+<div class="flex-c-m flex-w w-full p-t-38 pb-3">
+    {% if page.has_previous %}
+        {% if request.GET.category %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?category={{request.GET.category}}&page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% elif request.GET.status %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?status={{request.GET.status}}&page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% elif request.GET.sort %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?sort={{request.GET.sort}}&page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% elif request.GET.price %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?price={{request.GET.price}}&page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% elif request.GET.color %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?color={{request.GET.color}}&page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% elif request.GET.tag %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?tag={{request.GET.tag}}&page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% else %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?page={{page.previous_page_number}}"><i class="fa-solid fa-angle-right"></i></a>
+        {% endif %}
+    {% else %}
+    <div style="cursor: not-allowed;" class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1"><i class="fa-solid fa-angle-right"></i></div>
+    {% endif %}
+    <span class="px-4">صفحة {{page.number}} من {{page.paginator.num_pages}}</span>
+    {% if page.has_next %}
+        {% if request.GET.category %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?category={{request.GET.category}}&page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% elif request.GET.status %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?status={{request.GET.status}}&page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% elif request.GET.sort %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?sort={{request.GET.sort}}&page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% elif request.GET.price %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?price={{request.GET.price}}&page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% elif request.GET.color %}
+        <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?color={{request.GET.color}}&page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% elif request.GET.tag %}
+        <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?tag={{request.GET.tag}}&page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% else %}
+            <a class="flex-c-m how-pagination1 trans-04 m-all-7" href="?page={{page.next_page_number}}"><i class="fa-solid fa-angle-left"></i></a>
+        {% endif %}
+    {% else %}
+    <div style="cursor: not-allowed;" class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1" href="#"><i class="fa-solid fa-angle-left"></i></div>
+    {% endif %}
+</div>

@@ -1,0 +1,59 @@
+{% load static %}
+<!-- Related Products -->
+<section class="sec-relate-product bg0 p-t-45 p-b-105">
+    <div class="container">
+        <div class="p-b-45">
+            <h3 class="ltext-106 cl5 txt-center">منتجات ذات صله</h3>
+        </div>
+
+        <!-- Slide2 -->
+        <div class="wrap-slick2">
+            <div class="slick2">
+                {% for i in r_product %}
+                <div dir="rtl" class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+                    <!-- Block2 -->
+                    <div class="block2">
+                        <div class="block2-pic hov-img0">
+                            {% if i.image %}
+                                <img height="300px" style="object-fit:cover;" src="{{i.image.url}}" alt="IMG-PRODUCT" />
+                            {% endif %}
+                            <a href="{% url 'product_detail' i.pk %}"
+                                class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                التفاصيل
+                            </a>
+                        </div>
+
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l">
+                                <a href="{% url 'product_detail' i.pk %}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    {{i.name}}
+                                </a>
+
+                                <span class="stext-105 cl3">
+                                    {% if i.is_discount %}
+                                        <strong><span class="text-success ml-2">₪{{i.is_discount}}</span> <del class="text-danger">₪{{i.price}}</del></strong>
+                                    {% else %}
+                                        <strong>₪{{i.price}}</strong>
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div class="block2-txt-child2 flex-r p-t-3">
+                                {% if i.status %}
+                                    {% if i.status == 'New' %}
+                                        <span class="badge bg-primary ml-2">جديد</span>
+                                    {% elif i.status == 'Sale' %}
+                                        <span class="badge bg-success ml-2">تخفيض السعر</span>
+                                    {% else %}
+                                        <span class="badge bg-danger ml-2">انتهى</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

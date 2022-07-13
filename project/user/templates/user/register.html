@@ -1,0 +1,48 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<style>
+    label{
+        font-size: 18px !important;
+    }
+    input{
+        font-size: 16px !important;
+    }
+</style>
+<div class="myform">
+    <div class="main">
+        <legend class="form-title text-dark" align="center">إنشاء حساب جديد</legend>
+        <hr>
+        <form dir="rtl" class="form1" method="POST">
+            {% csrf_token %}
+            <label class="stext-102 cl3 mt-4" for="name"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="username" type="text" value="{% if form.username.value %}{{form.username.value}}{% endif %}">
+            <sapn class="text-danger">{{form.errors.username}}</sapn>
+
+            <label class="stext-102 cl3 mt-4" for="name">الإسم الأول</label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="first_name" type="text" value="{% if form.first_name.value %}{{form.first_name.value}}{% endif %}">
+            <sapn class="text-danger">{{form.errors.first_name}}</sapn>
+
+            <label class="stext-102 cl3 mt-4" for="name">الإسم الأخير</label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="last_name" type="text" value="{% if form.last_name.value %}{{form.last_name.value}}{% endif %}">
+            <sapn class="text-danger">{{form.errors.last_name}}</sapn>
+
+            <label class="stext-102 cl3 mt-4" for="name"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="email" type="email" value="{% if form.email.value %}{{form.email.value}}{% endif %}">
+            <sapn class="text-danger">{{form.errors.email}}</sapn>
+
+            <label class="stext-102 cl3 mt-4" for="name"><i class="fa-solid fa-lock"></i> كلمة المرور </label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="password1" type="password">
+            <sapn class="text-danger">{{form.errors.password1}}</sapn>
+
+            <label class="stext-102 cl3 mt-4" for="name"><i class="fa-solid fa-lock"></i> تأكيد كلمة المرور </label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="password2" type="password">
+            <sapn class="text-danger">{{form.errors.password2}}</sapn>
+            
+            <div class="text-center mt-5 mb-3">
+                <button type="submit" class="cl0 size-101 bg1 bor1 hov-btn1 trans-04">إنشاء الحساب</button>
+            </div>
+        </form>
+        <p class="forgot text-center mb-2"><a href="{% url 'login' %}">تسجيل الدخول</a></p>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,330 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load random_product %}
+{% block content %}
+
+<!-- Start Breadcrumb -->
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <a href="{% url 'product_list' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            تسوق
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <a href="{% url 'product_list' %}?category={{product.category.name}}" class="stext-109 cl8 hov-cl1 trans-04">
+            {{product.category.name}}
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+            {{product.name}}
+        </span>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<!-- Product Detail -->
+<section class="sec-product-detail bg0 p-t-65 p-b-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-lg-7 p-b-30">
+                <div class="p-l-25 p-r-30 p-lr-0-lg">
+                    <div class="wrap-slick3 flex-sb flex-w">
+                        <div class="wrap-slick3-dots"></div>
+                        <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                        
+                        <div class="slick3 gallery-lb">
+                            {% for img in product.photos.all %}
+                            <div class="item-slick3" data-thumb="{{img.image.url}}">
+                                <div class="wrap-pic-w pos-relative">
+                                    <img style="height: 100%; min-height: 500px; object-fit:cover;" src="{{img.image.url}}" alt="IMG-PRODUCT" />
+
+                                    <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                        href="{{img.image.url}}">
+                                        <i class="fa fa-expand"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div dir="rtl" class="col-md-6 col-lg-5 p-b-30">
+                <div class="p-r-50 p-t-5 p-lr-0-lg">
+                    <h4 class="mtext-105 cl2 p-b-14">
+                        <span class="js-name-detail">{{product.name}}</span>
+                        {% if product.status %}
+                            {% if product.status == 'New' %}
+                                <span class="badge bg-primary mr-2">جديد</span>
+                            {% elif product.status == 'Sale' %}
+                                <span class="badge bg-success mr-2">تخفيض السعر</span>
+                            {% else %}
+                                <span class="badge bg-danger mr-2">انتهى</span>
+                            {% endif %}
+                        {% endif %}
+                    </h4>
+
+                    <span class="mtext-106 cl2">
+                        {% if product.is_discount %}
+                        <strong><span class="text-success ml-2">₪{{product.is_discount}}</span> <del class="text-danger">₪{{product.price}}</del></strong>
+                        {% else %}
+                            <strong>₪{{product.price}}</strong>
+                        {% endif %}
+                    </span>
+
+                    <p style="border-bottom: 1px solid #ccc;" class="stext-102 cl3 p-t-23 pb-3">
+                        {{product.description}}
+                    </p>
+
+                    <!--  -->
+                    <form action="{% url 'add_cart' product.id %}" method="POST" class="p-t-33">
+                        {% csrf_token %}
+
+                        <div class="flex-w flex-r-m p-b-10">
+                            <div class="size-203 flex-c-m respon6">اللون</div>
+
+                            <div class="size-204 respon6-next">
+                                <div class="rs1-select2 bor8 bg0">
+                                    <select class="js-select2" name="color" required>
+                                        <option selected disabled>اختر اللون</option>
+                                        {% for color in product.color.all %}
+                                            <option value="{{color}}">{{color}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="dropDownSelect2"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-w flex-r-m">
+                            <div class="size-203 flex-c-m respon6">المقاس</div>
+                            <div class="size-204 respon6-next">
+                                <div class="rs1-select2 bor8 bg0">
+                                    <select class="js-select2" name="size" required>
+                                        <option selected disabled>اختر المقاس</option>
+                                        {% for size in product.size.all %}
+                                            <option value="{{size}}">{{size}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="dropDownSelect2"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-w flex-r-m p-b-33 mt-3">
+                            <div class="size-204 flex-w flex-m respon6-next">
+                                <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-30 trans-04 mt-4">
+                                    أضف لعربة التسوق
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Icon -->
+                    <div style="border-top: 1px solid #ccc;" class="mt-5 pt-4 text-center">
+                        <a href="{% url 'add_favorite' product.pk %}" class="fs-24 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 tooltip100 text-center {% if favorite_bool %} js-addedwish-detail {% endif %}" data-tooltip="{% if favorite_bool %} إزالة من المفضلة {% else %} إضافة للمفضلة {% endif %}">
+                            <i class="zmdi zmdi-favorite"></i>
+                        </a>
+
+                        <a href="https://www.facebook.com/sisters.store88" target="_blank" class="fs-24 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100 text-center" data-tooltip="Facebook">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+
+                        <a href="https://www.instagram.com/sistersstore88/" target="_blank" class="fs-24 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100 text-center" data-tooltip="Instagram">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bor10 m-t-50 p-t-43 p-b-40">
+            <!-- Tab01 -->
+            <div class="tab01">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item p-b-10">
+                        <a class="nav-link" data-toggle="tab" href="#description" role="tab">الوصف</a>
+                    </li>
+
+                    <li class="nav-item p-b-10">
+                        <a class="nav-link" data-toggle="tab" href="#information" role="tab">معلومات إضافية</a>
+                    </li>
+
+                    <li class="nav-item p-b-10">
+                        <a class="nav-link active" data-toggle="tab" href="#reviews" role="tab">التعليقات ({{count}})</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content p-t-43">
+                    <!-- - -->
+                    <div dir="rtl" class="tab-pane fade" id="description" role="tabpanel">
+                        <div class="how-pos2 p-lr-15-md">
+                            <p class="stext-102 cl6">
+                                {{product.description}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- - -->
+                    <div dir="rtl" class="tab-pane fade" id="information" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+                                <ul class="p-lr-28 p-lr-15-sm">
+                                    <li class="flex-w flex-t p-b-7 mb-2">
+                                        <span class="stext-102 cl3 size-205"> الألوان: </span>
+
+                                        <span class="stext-102 cl6 size-206">
+                                            {% for color in product.color.all %}
+                                            <span class="badge badge-pill badge-light">{{color}}</span>
+                                            {% endfor %}
+                                        </span>
+                                    </li>
+
+                                    <li class="flex-w flex-t p-b-7 mb-2">
+                                        <span class="stext-102 cl3 size-205"> المقاسات: </span>
+
+                                        <span class="stext-102 cl6 size-206">
+                                            {% for size in product.size.all %}
+                                            <span style="background-color: #a29bfe;" class="badge badge-pill">{{size}}</span>
+                                            {% endfor %}
+                                        </span>
+                                    </li>
+                                    <li class="flex-w flex-t p-b-7">
+                                        <span class="stext-102 cl3 size-205">الوسم:</span>
+                                        <span class="stext-102 cl6 size-206">
+                                          {% for tag in product.tags.all %}
+                                          <span class="badge badge-pill badge-info">{{tag}}</span>
+                                          {% endfor %}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- - -->
+                    <div dir="rtl" class="tab-pane fade show active" id="reviews" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+                                <div class="p-b-30 m-lr-15-sm">
+                                    <!-- Review -->
+                                    {% if comments %}
+                                        {% for comment in comments %}
+                                            <div style="border: 1px solid #ccc; border-radius: 3px;" class="flex-w flex-t p-b-68 mb-3 p-4">
+                                                <div class="wrap-pic-s size-109 bor0 of-hidden m-t-6 ml-3">
+                                                    <img src="https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/v937-aew-111_3.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=8ce2cd03f94f2baddcb332cfb50f78b9" alt="AVATAR" />
+                                                </div>
+
+                                                <div class="size-207">
+                                                    <div style="border-bottom: 1px solid #ccc;" class="flex-w flex-sb-m p-b-5">
+                                                        <h6 class="mtext-107 cl2">
+                                                            ( {{comment.name}} )
+                                                            <span class="text-secondary">{{comment.comment_date|date:'j / n / o'}}</span>
+                                                        </h6>
+                                                    </div>
+                                                    <p style=" white-space: pre-line; word-wrap: break-word;">
+                                                        {{comment.description}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        {% include 'store/pagination.html' with page=comments %}
+                                        <p class="bor12 mb-5"></p>
+                                    {% else %}
+                                        <div class="text-center p-4 comment mb-5">
+                                            <h5 class="mb-0">لا يوجد تعليقات.</h5>
+                                        </div>
+                                    {% endif %}
+                                    <!-- Add review -->
+                                    <form method="POST" action="" class="w-full">
+                                        {% csrf_token %}
+                                        <h5 class="mtext-108 cl2 p-b-7">أضف تعليق</h5>
+
+                                        <p class="stext-102 cl6 mb-5">
+                                            لن يتم نشر عنوان بريدك الإلكتروني. الحقول المطلوبة محددة بهذه العلامة (*) 
+                                        </p>
+
+                                        <div class="row p-b-25">
+                                            <div class="col-sm-6 p-b-5">
+                                                <label class="stext-102 cl3" for="name">الإسم*</label>
+                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name" placeholder="الإسم" />
+                                                <span class="text-danger mb-3">{{form.errors.name}}</span>
+                                            </div>
+                                            <div class="col-sm-6 p-b-5">
+                                                <label class="stext-102 cl3" for="email">البريد الإلكتروني*</label>
+                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="email" name="email" placeholder="البريد الإلكتروني"/>
+                                                <span class="text-danger mb-3">{{form.errors.email}}</span>
+                                            </div>
+                                            <div class="col-12 p-b-5 mt-3">
+                                                <label class="stext-102 cl3" for="review">تعليق*</label>
+                                                <textarea style="font-family: 'Tajawal', sans-serif !important;" class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="description" name="description" placeholder="وصف التعليق..."></textarea>
+                                                <span class="text-danger mb-3">{{form.errors.description}}</span>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
+                                              نشر &nbsp;<i class="fa-solid fa-paper-plane"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div dir="rtl" class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
+        <span class="fs-24 cl6 p-lr-25"> التصنيف: {{product.category.name}} </span>
+    </div>
+</section>
+{% rand %}
+<!-- <script>
+    var updateBtns = document.getElementsByClassName('update-cart');
+    for(var i = 0; i < updateBtns.length; i++){
+        updateBtns[i].addEventListener('click', function(){
+            var productId = this.dataset.product
+            var action = this.dataset.action
+
+            if (user === 'AnonymousUser'){
+                console.log('not log in')
+            }else{
+                updateUserOrder(productId, action)
+            }
+        })
+    }
+    function updateUserOrder(productId, action){
+        // var csrftoken = document.querySelector('[name="csrfmiddlewaretoken"]');
+        var url = '/update_cart/'
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                'productId': productId,
+                'action': action,
+            })
+        })
+        .then((response) =>{
+            return response.json()
+        })
+        .then((data) =>{
+            console.log('data: ', data)
+            location.reload()
+        })
+    }
+
+</script> -->
+{% endblock content %}

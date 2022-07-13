@@ -1,0 +1,142 @@
+{% extends 'base_generic.html' %} {% block content %}
+<style>
+    th {
+        text-align: center !important;
+    }
+    .hidden{
+        display: none;
+    }
+    label{
+        font-size: 18px !important;
+    }
+    input{
+        font-size: 16px !important;
+    }
+</style>
+<div dir="rtl" class="container">
+    <div class="row py-5">
+        <div class="col-md-3">
+            <div class="list-group mb-5" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home"><i class="fa-solid fa-address-card"></i> ملفي الشخصي </a>
+                <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile"><i class="fa-solid fa-box-archive"></i> طلباتي </a>
+                <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings"><i class="fa-solid fa-gears"></i> الإعدادات </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                    <div style="border: 1px solid #ddd; border-radius: 3px;" class="py-4">
+                        <legend class="form-title text-dark" align="center">
+                            ملفي الشخصي
+                        </legend>
+                        <hr />
+                        <form class="form1" method="POST" action="">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.username}}" readonly/>
+                                </div>
+                                <div class="col-sm">
+                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.email}}" readonly/>
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-sm">
+                                    <label class="stext-102 cl3 mt-3" for="name">الإسم الأول</label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="first_name" type="text" value="{% if u_form.first_name.value %} {{u_form.first_name.value}} {% endif %}" />
+                                    <span class="text-danger mb-3">{{u_form.errors.first_name}}</span>
+                                </div>
+                                <div class="col-sm">
+                                    <label class="stext-102 cl3 mt-3" for="name">الإسم الأخير</label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="last_name" type="text" value="{% if u_form.last_name.value %} {{u_form.last_name.value}} {% endif %}" />
+                                    <span class="text-danger mb-3">{{u_form.errors.last_name}}</span>
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-sm">
+                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-solid fa-phone"></i> رقم الهاتف </label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="phone_number" type="text" value="{% if user.customer.phone_number %} {{user.customer.phone_number}} {% endif %}" />
+                                </div>
+                                <div class="col-sm">
+                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-solid fa-location-dot"></i> عنوان السكن </label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="location" type="text" value="{% if user.customer.location %} {{user.customer.location}} {% endif %}" />
+                                </div>
+                            </div>
+                            <div class="text-center my-5">
+                                <button type="submit" class="btn btn-primary">
+                                    تحديث ملفي الشخصي
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                    {% if not order_done %}
+                    <div style="border-style: solid; border-radius: 3px;" class="text-center p-4 comment">
+                        <h5 class="mb-0">لم تتم أي عملية شحن مأخرا.</h5>
+                    </div>
+                    {% else %}
+                        {% for order_done in order_done %}
+                            <table class="table">
+                                <thead>
+                                    <tr class="table-light">
+                                        <td colspan="6" class="text-center">
+                                            <h3>الطلب ({{forloop.counter}})</h3>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center table-primary">
+                                        <th scope="col">المنتج</th>
+                                        <th scope="col">السعر</th>
+                                        <th scope="col">اللون</th>
+                                        <th scope="col">المقاس</th>
+                                        <th scope="col">الكمية</th>
+                                        <th scope="col">تاريخ الشحن</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order_done %}
+                                    <tr class="text-center">
+                                        <th>{{item.product}}</th>
+                                        <td>₪{{item.product_price}}</td>
+                                        <td>{{item.color}}</td>
+                                        <td>{{item.size}}</td>
+                                        <td>{{item.quantity}}</td>
+                                        <td>
+                                            {{item.date_added|date:'f A'}}
+                                            <br>
+                                            {{item.date_added|date:'j / n / o'}}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr class="table-secondary">
+                                        <th><b> المجموع </b></th>
+                                        <td class="text-center">₪{{order_done.0.order.total}}</td>
+                                        <td class="text-center"><b>الكوبون</b></td>
+                                        <td class="text-center">{% if order_done.0.order.coupon %} {{order_done.0.order.coupon}} (%{{order_done.0.order.coupon_discount}}) {% else %} لا يوجد {% endif %}</td>
+                                        <td class="text-center"><b>اكتمل</b></td>
+                                        <td class="text-center">{% if order_done.0.order.done %} نعم {% else %} لا {% endif %}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                    <div style="border: 1px solid #ddd; border-radius: 3px;" class="text-center py-4">  
+                        <div class="row">
+                            <div class="col-sm p-1">
+                                <b style="vertical-align: -9px;">تغير كلمة مرور الحساب</b>
+                            </div>
+                            <div class="col-sm p-1">
+                                <a href="{% url 'change_password' %}" class="btn btn-primary">
+                                    تغير كلمة المرور <i class="fa-solid fa-arrows-rotate"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

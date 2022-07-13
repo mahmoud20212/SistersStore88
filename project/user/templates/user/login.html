@@ -1,0 +1,29 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<style>
+    label{
+        font-size: 18px !important;
+    }
+    input{
+        font-size: 16px !important;
+    }
+</style>
+<div class="myform">
+    <div class="main">
+        <legend class="form-title text-dark" align="center">تسجيل الدخول</legend>
+        <hr>
+        <form dir="rtl" class="form1" method="POST" action="">
+            {% csrf_token %}
+            <label class="stext-102 cl3 mt-4" for="name"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="username" type="text" align="center">
+            <label class="stext-102 cl3 mt-4" for="name"><i class="fa-solid fa-lock"></i> كلمة المرور </label>
+            <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="password" type="password" align="center">
+            <div class="text-center mt-5">
+                <button type="submit" class="cl0 size-101 bg1 bor1 hov-btn1 trans-04">تسجيل الدخول</button>
+            </div>
+        </form>
+        <p class="forgot my-3" align="center"><a href="{% url 'register' %}">انشاء حساب جديد</a></p>
+        <p class="forgot" align="center"><a href="{% url 'password_reset' %}">نسيت كلمة المرور ؟</a></p>
+    </div>
+</div>
+{% endblock content %}
