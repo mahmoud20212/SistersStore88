@@ -19,6 +19,11 @@
 <!-- Content page -->
 <section class="bg0 p-t-104 p-b-116">
     <div dir="rtl" class="container">
+        {% if success %}
+        <div class="alert alert-success">
+            شكرا لك... سيتم تواصل معك عبر البريد الإلكتروني.
+        </div>
+        {% endif %}
         <div class="flex-w flex-tr">
             <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
                 
@@ -36,7 +41,7 @@
                     <div class="bor8 m-t-30">
                         <textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="description" placeholder="كيف يمكن أن نساعد؟"></textarea>
                     </div>
-                    <span class="text-danger m-b-30">{{form.errors.description}}</span>
+                    <span id="require" class="text-danger m-b-30">{{form.errors.description}}</span>
 
                     <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer m-t-30">
                         أرسل &nbsp;<i class="fa-solid fa-paper-plane"></i>
@@ -84,7 +89,7 @@
 
                     <div class="size-212 p-t-2">
                         <span class="mtext-110 cl2">
-                            الدعم الفني
+                            بريدنا الإلكتروني
                         </span>
 
                         <p class="stext-115 cl1 size-213 p-t-18">
@@ -95,5 +100,11 @@
             </div>
         </div>
     </div>
-</section>	
+</section>
+<script>
+    element3 = document.getElementById('require')
+    if (element3.innerText == 'This field is required.'){
+        element3.innerText = 'هذا الحقل مطلوب.'
+    }
+</script>
 {% endblock content %}

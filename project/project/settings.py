@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'store.apps.StoreConfig',
     'user.apps.UserConfig',
+    'ckeditor',
+    'webpush',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +130,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Notification
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "BFd3wMOIPdm_Ry_Cpkg0DuVGKcWfFmbOVjW_yjmBHmMyfUcrHEFvei5O5Nv7QQix-ao3roIkYtlIKkvr5aTobY4",
+    "VAPID_PRIVATE_KEY":"XhFq5FV0xc6cbnTkevzeI6ycGTBmmiEZ1hxVIYy4XPE",
+    "VAPID_ADMIN_EMAIL": "occee123@gmail.com",
+}
 
 # For Pop Up PayPal
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'

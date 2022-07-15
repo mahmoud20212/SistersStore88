@@ -1,4 +1,6 @@
-{% extends 'base_generic.html' %} {% block content %}
+{% extends 'base_generic.html' %}
+{% load webpush_notifications %}
+{% block content %}
 <style>
     th {
         text-align: center !important;
@@ -71,66 +73,57 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                    {% if not order_done %}
+                    {% if not orders %}
                     <div style="border-style: solid; border-radius: 3px;" class="text-center p-4 comment">
-                        <h5 class="mb-0">لم تتم أي عملية شحن مأخرا.</h5>
+                        <h5 class="mb-0">لا يوجد أي طلبات تمت.</h5>
                     </div>
                     {% else %}
-                        {% for order_done in order_done %}
-                            <table class="table">
-                                <thead>
-                                    <tr class="table-light">
-                                        <td colspan="6" class="text-center">
-                                            <h3>الطلب ({{forloop.counter}})</h3>
-                                        </td>
-                                    </tr>
-                                    <tr class="text-center table-primary">
-                                        <th scope="col">المنتج</th>
-                                        <th scope="col">السعر</th>
-                                        <th scope="col">اللون</th>
-                                        <th scope="col">المقاس</th>
-                                        <th scope="col">الكمية</th>
-                                        <th scope="col">تاريخ الشحن</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in order_done %}
-                                    <tr class="text-center">
-                                        <th>{{item.product}}</th>
-                                        <td>₪{{item.product_price}}</td>
-                                        <td>{{item.color}}</td>
-                                        <td>{{item.size}}</td>
-                                        <td>{{item.quantity}}</td>
-                                        <td>
-                                            {{item.date_added|date:'f A'}}
-                                            <br>
-                                            {{item.date_added|date:'j / n / o'}}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                    <tr class="table-secondary">
-                                        <th><b> المجموع </b></th>
-                                        <td class="text-center">₪{{order_done.0.order.total}}</td>
-                                        <td class="text-center"><b>الكوبون</b></td>
-                                        <td class="text-center">{% if order_done.0.order.coupon %} {{order_done.0.order.coupon}} (%{{order_done.0.order.coupon_discount}}) {% else %} لا يوجد {% endif %}</td>
-                                        <td class="text-center"><b>اكتمل</b></td>
-                                        <td class="text-center">{% if order_done.0.order.done %} نعم {% else %} لا {% endif %}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        {% endfor %}
+                        <div style="border: 1px solid #ddd; border-radius: 3px;" class="py-4">
+                            <legend class="form-title text-dark" align="center">
+                            طلباتي
+                            </legend>
+                            <hr />
+                            <div class="form1 text-center">
+                                {% for order in orders %}
+                                <div style="border-radius: 3px;" class="row bg-light mb-3 py-2">
+                                    <div class="col-sm p-1">
+                                        <b style="vertical-align: -8px;">الطلب ({{forloop.counter}})</b>
+                                    </div>
+                                    <div class="col-sm p-1">
+                                        <a class="btn btn-primary" href="{% url 'order' order.pk %}">عرض التفاصيل <i class="fa-solid fa-eye"></i></a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     {% endif %}
                 </div>
                 <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
                     <div style="border: 1px solid #ddd; border-radius: 3px;" class="text-center py-4">  
-                        <div class="row">
-                            <div class="col-sm p-1">
-                                <b style="vertical-align: -9px;">تغير كلمة مرور الحساب</b>
-                            </div>
-                            <div class="col-sm p-1">
-                                <a href="{% url 'change_password' %}" class="btn btn-primary">
-                                    تغير كلمة المرور <i class="fa-solid fa-arrows-rotate"></i>
-                                </a>
+                        <legend class="form-title text-dark" align="center">
+                            الإعدادات
+                        </legend>
+                        <hr>
+                        <div class="form1">
+                            <p style="text-align: right;" class="alert alert-info">
+                                <i class="fa-solid fa-circle-info"></i> تأكد من تفعيل الإشعارات لتصلك دائما.
+                            </p>
+                            <div class="row">
+                                <div class="col-sm p-1">
+                                    <b style="vertical-align: -9px;">إدارة الإشعارات</b>
+                                </div>
+                                <div class="col-sm p-1">
+                                    {% webpush_button with_class="btn btn-primary" %}
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-sm p-1">
+                                    <b style="vertical-align: -9px;">تغير كلمة مرور الحساب</b>
+                                </div>
+                                <div class="col-sm p-1">
+                                    <a href="{% url 'change_password' %}" class="btn btn-primary">
+                                        تغير كلمة المرور <i class="fa-solid fa-arrows-rotate"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

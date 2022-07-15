@@ -1,7 +1,17 @@
 {% extends 'base_generic.html' %}
 {% load static %}
 {% block content %}
-
+<style>
+  hr{
+    width: 100%;
+  }
+  
+    @media (max-width: 575px){
+      .my-respon{
+        font-size: 30px;
+      }
+    }
+</style>
 <!-- Slider -->
 <section dir="ltr" class="section-slide">
   <div class="wrap-slick1">
@@ -140,7 +150,7 @@
 <section dir="rtl" class="bg0 p-t-23 p-b-140">
   <div class="container">
     <div class="p-b-10">
-      <h3 class="ltext-103 cl5">نظرة عامة على المنتجات</h3>
+      <h3 class="ltext-103 cl5 my-respon">نظرة عامة على المنتجات</h3>
     </div>
 
     <div class="flex-w flex-sb-m p-b-52">
@@ -170,6 +180,12 @@
         </button>
       </div>
     </div>
+
+    {% if not products %}
+      <div class="text-center p-4 comment">
+        <h5 class="mb-0">لا يوجد منتجات.</h5>
+      </div>
+    {% endif %}
 
     <!-- Product div -->
     <div dir="rtl" class="row isotope-grid">
@@ -282,10 +298,11 @@
               {% endif %}
             </span>
 
-            <p style="border-bottom: 1px solid #ccc;" class="stext-102 cl3 p-t-23 border-bottom pb-3">
-              {{product.description}}
+            <p class="stext-102 cl3 p-t-23 border-bottom pb-3">
+              {{product.description|safe}}
             </p>
-
+            <hr style="width: 100%;">
+            
             <!-- Info -->
             <div class="my-info">
               <div class="flex-w flex-r-m p-b-10 p-t-33 mt-3">

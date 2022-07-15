@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from user.models import Customer
 from django.core.validators import MinValueValidator, MaxValueValidator
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -9,6 +10,18 @@ class Contact(models.Model):
     email = models.EmailField()
     description = models.TextField()
 
+    def __str__(self):
+        return self.email
+
+class FAQ(models.Model):
+    title = models.CharField(max_length=150)
+    description = RichTextField()
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-id']
 
 class Color(models.Model):
     color = models.CharField(max_length=50)
@@ -55,7 +68,7 @@ class Product(models.Model):
     color = models.ManyToManyField(Color)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], null=True, blank=True)
-    description = models.TextField()
+    description = RichTextField()
     tags = models.ManyToManyField(Tag)
     date_created = models.DateTimeField(default=timezone.now)
 
@@ -91,8 +104,17 @@ class Coupon(models.Model):
 
 
 class Order(models.Model):
+    STATUSES = (
+        ('under construction','under construction'),
+        ('in store','in store'),
+        ('in the way','in the way'),
+        ('delivered','delivered'),
+    )
+    code = models.CharField(blank=True, null=True, max_length=10)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
-    date_orderd = models.DateTimeField(default=timezone.now)
+    created_in = models.DateTimeField(default=timezone.now)
+    date_orderd = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=50, choices=STATUSES, default=STATUSES[0][0], blank=True, null=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
     total = models.IntegerField(default=0, validators=[MinValueValidator(0)], null=True, blank=True)
@@ -131,7 +153,7 @@ class Order(models.Model):
         return total
 
 class Cart(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
     color = models.CharField(max_length=50, null=True)
     size = models.CharField(max_length=50, null=True)

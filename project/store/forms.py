@@ -28,6 +28,7 @@ class NewComment(forms.ModelForm):
     name = forms.CharField(error_messages=errors_required)
     email = forms.EmailField(error_messages=email_errors)
     description = forms.Textarea()
+    
     class Meta:
         model = Comment
         fields = ['name', 'email', 'description']
@@ -35,6 +36,7 @@ class NewComment(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     email = forms.EmailField(error_messages=email_errors)
     description = forms.Textarea()
+    
     class Meta:
         model = Contact
         fields = ['email', 'description']

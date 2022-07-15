@@ -1,3 +1,5 @@
+import string  
+import secrets # import package 
 import json
 import stripe
 from django.conf import settings
@@ -10,9 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils import timezone
-from .models import Cart, Product, Category, Order, OrderDone, Favorite, Coupon
+from .models import Cart, Product, Category, Order, OrderDone, Favorite, Coupon, FAQ
+from django.contrib.auth.models import User
 from .forms import NewComment, ContactForm
 from django.views import View
+from webpush import send_user_notification
 
 # ============================================
 
@@ -25,14 +29,9 @@ def cart_items(request):
 def favorite_number(request):
     if request.user.is_authenticated:
         customer = request.user.customer
-        try:
-            favorite = Favorite.objects.get(customer=customer)
-            product = favorite.product.all().count()
-            return product
-        except Favorite.DoesNotExist:
-            customer = request.user.customer
-            favorite = Favorite.objects.create(customer=customer)
-            favorite.save()
+        favorite = Favorite.objects.get(customer=customer)
+        product = favorite.product.all().count()
+        return product
     return 0
 
 # ============================================
@@ -67,6 +66,26 @@ def index(request):
     }
     return render(request, 'store/index.html', context)
 
+def faqs(request):
+    faqs = FAQ.objects.all()
+
+    # paginator
+    paginator = Paginator(faqs, 5)
+    page = request.GET.get('page')
+    try:
+        faqs = paginator.page(page)
+    except PageNotAnInteger:
+        faqs = paginator.page(1)
+    except EmptyPage:
+        faqs = paginator.page(paginator.num_page)
+
+    context = {
+        'faqs': faqs,
+        'cart_items': cart_items(request),
+        'favorite_number': favorite_number(request),
+    }
+    return render(request, 'store/faqs.html', context)
+
 def about(request):
     context = {
         'cart_items': cart_items(request),
@@ -75,11 +94,12 @@ def about(request):
     return render(request, 'store/about.html', context)
 
 def contact(request):
+    success = False
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'شكرا لك... سيتم تواصل معك عبر البريد الإلكتروني.')
+            success = True
     else:
         form = ContactForm()
 
@@ -87,6 +107,7 @@ def contact(request):
         'form': form,
         'cart_items': cart_items(request),
         'favorite_number': favorite_number(request),
+        'success': success,
     } 
     return render(request, 'store/contact.html', context)
     
@@ -305,6 +326,9 @@ def processOrder(request):
         if order.get_cart_total == int(data['total']) and data['ok'] == True:
             order.complete = True
             order.total = order.get_cart_total
+            order.date_orderd = timezone.now()
+            res = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(10))
+            order.code = str(res)
             if order.coupon:
                 order.coupon_discount = order.coupon.discount
 
@@ -321,6 +345,9 @@ def processOrder(request):
                 myDoneOrder.save()
             
             Cart.objects.filter(order=order).delete()
+            superusers = User.objects.filter(is_superuser=True)
+            payload = {"head": "SistersStore", "body": f" قام المستخدم {order.customer} بطلب طلب جديد. "}
+            send_user_notification(user=superusers[0], payload=payload, ttl=1000)
             
             messages.success(request, 'تمت عمليت الشحن بنجاح... يمكنك الآن رؤية الطلبات الخاصة بك.')
             return JsonResponse("True", safe=False)

@@ -7,6 +7,9 @@
     input{
         font-size: 16px !important;
     }
+    .help-text li{
+        list-style-type: circle;
+    }
 </style>
 <div class="myform">
     <div class="main">
@@ -37,12 +40,31 @@
             <label class="stext-102 cl3 mt-4" for="name"><i class="fa-solid fa-lock"></i> تأكيد كلمة المرور </label>
             <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="password2" type="password">
             <sapn class="text-danger">{{form.errors.password2}}</sapn>
+
+            <p class="text-muted mt-4">بعض الإرشادات يرجى اتباعها.</p>
+            <ul class="help-text text-muted p-3">
+                <li>
+                    يجب أن تحتوي كلمة المرور الخاصة بك على 8 أحرف على الأقل.
+                </li>
+                <li>
+                    يجب أن تحتوي كلمة المرور على حرف صغير وحرف كبير ورقم واحد على الأقل.
+                </li>
+                <li>
+                    لا يمكن أن تكون كلمة مرورك مشابهة جدًا لمعلوماتك الشخصية الأخرى.
+                </li>
+                <li>
+                    لا يمكن أن تكون كلمة المرور الخاصة بك كلمة مرور شائعة الاستخدام.
+                </li>
+                <li>
+                    لا يمكن أن تكون كلمة مرورك رقمية بالكامل.
+                </li>
+            </ul>
             
             <div class="text-center mt-5 mb-3">
                 <button type="submit" class="cl0 size-101 bg1 bor1 hov-btn1 trans-04">إنشاء الحساب</button>
             </div>
         </form>
-        <p class="forgot text-center mb-2"><a href="{% url 'login' %}">تسجيل الدخول</a></p>
+        <p class="forgot text-center mb-4"><a href="{% url 'login' %}">تسجيل الدخول</a></p>
     </div>
 </div>
 {% endblock content %}

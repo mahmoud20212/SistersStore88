@@ -2,7 +2,11 @@
 {% load static %}
 {% load random_product %}
 {% block content %}
-
+<style>
+    hr{
+        width: 100%;
+    }
+</style>
 <!-- Start Breadcrumb -->
 <div dir="rtl" class="container">
     <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
@@ -78,10 +82,11 @@
                         {% endif %}
                     </span>
 
-                    <p style="border-bottom: 1px solid #ccc;" class="stext-102 cl3 p-t-23 pb-3">
-                        {{product.description}}
+                    <p class="stext-102 cl3 p-t-23 pb-3">
+                        {{product.description|safe}}
                     </p>
-
+                    <hr style="width: 100%;">
+                    
                     <!--  -->
                     <form action="{% url 'add_cart' product.id %}" method="POST" class="p-t-33">
                         {% csrf_token %}
@@ -168,7 +173,7 @@
                     <div dir="rtl" class="tab-pane fade" id="description" role="tabpanel">
                         <div class="how-pos2 p-lr-15-md">
                             <p class="stext-102 cl6">
-                                {{product.description}}
+                                {{product.description|safe}}
                             </p>
                         </div>
                     </div>
@@ -266,7 +271,7 @@
                                             <div class="col-12 p-b-5 mt-3">
                                                 <label class="stext-102 cl3" for="review">تعليق*</label>
                                                 <textarea style="font-family: 'Tajawal', sans-serif !important;" class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="description" name="description" placeholder="وصف التعليق..."></textarea>
-                                                <span class="text-danger mb-3">{{form.errors.description}}</span>
+                                                <span id="require" class="text-danger mb-3">{{form.errors.description}}</span>
                                             </div>
                                         </div>
 
@@ -327,4 +332,10 @@
     }
 
 </script> -->
+<script>
+    element2 = document.getElementById('require')
+    if (element2.innerText == 'This field is required.'){
+        element2.innerText = 'هذا الحقل مطلوب.'
+    }
+</script>
 {% endblock content %}

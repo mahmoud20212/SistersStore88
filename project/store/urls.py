@@ -15,4 +15,5 @@ urlpatterns = [
     path('coupon_apply/', views.coupon_apply, name='coupon_apply'),
     path('add_favorite/<int:pk>/', views.add_favorite, name='add_favorite'),
     path('favorite/', views.favorite, name='favorite'),
+    path('faqs/', views.faqs, name='faqs'),
 ]

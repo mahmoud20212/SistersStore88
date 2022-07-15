@@ -1,0 +1,76 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+
+<!-- Start Breadcrumb -->
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <a href="{% url 'profile' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            ملفي الشخصي
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            تفاصيل الطلب
+        </span>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<section class="bg0 p-t-23 p-b-140">
+    <div dir="rtl" class="container">
+        <div class="p-b-10 mb-5">
+            <h3 class="ltext-103 cl5">تفاصيل الطلب</h3>
+        </div>
+        <div style="border-radius: 5px;" class="row p-3 text-center bg-light mb-5 mx-1">
+            <div class="col-md py-3 my-2 bg-white">
+                <h5>الحالة: {% if order.status == 'under construction' %} <span class="text-danger">قيد الإنشاء <i class="fa-solid fa-screwdriver-wrench"></i></span> {% elif order.status == 'in store' %} <span class="text-warning">في المخزن <i class="fa-solid fa-store"></i></span>  {% elif order.status == 'in the way' %} <span class="text-primary">في الطريق <i class="fa-solid fa-truck"></i></span> {% else %} <span class="text-success">تم الإستلام <i class="fa-solid fa-circle-check"></i></span> {% endif %}</h5>
+            </div>
+            <div class="col-md py-3 my-2 bg-white">
+                <h5>اكتمل: {% if order.done %} <span class="text-success"> <i class="fa-solid fa-circle-check"></i></span> {% else %} <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span></span> {% endif %}</h5>
+            </div>
+            <div class="col-md py-3 my-2 bg-white">
+                <h5>الكوبون: {% if order.coupon %} <span class="text-success">{{order.coupon}} (%{{order.coupon_discount}})</span> {% else %} <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span> {% endif %}</h5>
+            </div>
+            <div class="col-md py-3 my-2 bg-white">
+                <h5 style="color: #6c7ae0;"><b>إجمالي السعر: {{order.total}}₪</b></h5>
+            </div>
+            <div class="col-md py-3 my-2 bg-white">
+                <h5>رمز الطلب: {{order.code}}</h5>
+            </div>
+            <div class="col-md py-3 my-2 bg-white">
+                <h5>
+                    {{order.date_orderd|date:'f A'}}
+                    <br>
+                    {{order.date_orderd|date:'j / n / o'}}
+                </h5>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-light">
+                    <th class="text-center" scope="col">المنتج</th>
+                    <th class="text-center" scope="col">السعر</th>
+                    <th class="text-center" scope="col">اللون</th>
+                    <th class="text-center" scope="col">المقاس</th>
+                    <th class="text-center" scope="col">الكمية</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.orderdone_set.all %}
+                <tr>
+                    <th class="text-center">{{item.product}}</th>
+                    <td class="text-center">₪{{item.product_price}}</td>
+                    <td class="text-center">{{item.color}}</td>
+                    <td class="text-center">{{item.size}}</td>
+                    <td class="text-center">{{item.quantity}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock content %}

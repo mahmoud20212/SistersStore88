@@ -18,9 +18,10 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [PhotoInLine,]
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('customer','date_orderd', 'coupon', 'total', 'complete', 'done')
+    list_display = ('customer', 'date_orderd', 'status', 'code', 'coupon', 'total', 'complete', 'done')
     list_filter = ('complete','done')
     inlines = [OrderDoneInLine,]
+    search_fields = ('code',)
 
 class CouponAdmin(admin.ModelAdmin):
     list_display = ('code','valid_from', 'valid_to', 'discount', 'active',)
@@ -39,4 +40,5 @@ admin.site.register(Color)
 admin.site.register(Tag)
 admin.site.register(Category)
 admin.site.register(Comment)
+admin.site.register(FAQ)
 

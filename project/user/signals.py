@@ -8,7 +8,8 @@ from store.models import Favorite
 @receiver(post_save, sender=User)
 def create_customer(sender, instance, created, **kwargs):
     if created:
-        Customer.objects.create(user=instance)
+        customer = Customer.objects.create(user=instance)
+        favorite = Favorite.objects.create(customer=customer)
         
 @receiver(post_save, sender=User)
 def save_customer(sender, instance, **kwargs):

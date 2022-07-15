@@ -1,22 +1,22 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 
 username_errors = {
     'required': 'هذا الحقل مطلوب.',
-    'min_length': 'إسم المستخدم يجب أن لا يقل عن 4 عناصر.',
+    'min_length': 'إسم المستخدم يجب أن لا يقل عن 4 أحرف.',
 }
 first_name_errors = {
     'required': 'هذا الحقل مطلوب.',
-    'min_length': 'الإسم الأول يجب أن لا يقل عن 4 عناصر.',
+    'min_length': 'الإسم الأول يجب أن لا يقل عن 4 أحرف.',
 }
 last_name_errors = {
     'required': 'هذا الحقل مطلوب.',
-    'min_length': 'الإسم الأخير يجب أن لا يقل عن 4 عناصر.',
+    'min_length': 'الإسم الأخير يجب أن لا يقل عن 4 أحرف.',
 }
 password_errors = {
     'required': 'هذا الحقل مطلوب.',
-    'min_length': 'كلمة المرور يجب  ألا تقل عن 8 عناصر.',
+    'min_length': 'كلمة المرور يجب  ألا تقل عن 8 أحرف.',
 }
 email_errors = {
     'required': 'هذا الحقل مطلوب.',
@@ -45,6 +45,26 @@ class UserCreationForm(forms.ModelForm):
     #     for field in self.fields.values():
     #         field.error_messages = {'required':'هذا الحقل مطلوب.'}
 
+    def clean_password1(self):
+        password = self.cleaned_data['password1']
+
+        # check for digit
+        if sum(c.isdigit() for c in password) < 1:
+            msg = 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.'
+            self.add_error('password1', msg)
+
+        # check for uppercase letter
+        if not any(c.isupper() for c in password):
+            msg = 'يجب أن تحتوي كلمة المرور على حرف واحد كبير على الأقل.'
+            self.add_error('password1', msg)
+
+        # check for lowercase letter
+        if not any(c.islower() for c in password):
+            msg = 'يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.'
+            self.add_error('password1', msg)
+            
+        return password
+
     def clean_password2(self):
         cd = self.cleaned_data
         if cd['password1'] != cd['password2']:
@@ -70,7 +90,6 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name']
 
-
 class UserChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput, error_messages=errors_required)
     new_password1 = forms.CharField(widget=forms.PasswordInput, min_length=8, error_messages=password_errors)
@@ -79,6 +98,26 @@ class UserChangePasswordForm(PasswordChangeForm):
     class Meta:
         model = User
         fields = ['old_password', 'new_password1', 'new_password2']
+    
+    def clean_new_password1(self):
+        password = self.cleaned_data['new_password1']
+
+        # check for digit
+        if sum(c.isdigit() for c in password) < 1:
+            msg = 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.'
+            self.add_error('new_password1', msg)
+
+        # check for uppercase letter
+        if not any(c.isupper() for c in password):
+            msg = 'يجب أن تحتوي كلمة المرور على حرف واحد كبير على الأقل.'
+            self.add_error('new_password1', msg)
+
+        # check for lowercase letter
+        if not any(c.islower() for c in password):
+            msg = 'يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.'
+            self.add_error('new_password1', msg)
+            
+        return password
 
     def clean_new_password2(self):
         cd = self.cleaned_data
@@ -86,4 +125,36 @@ class UserChangePasswordForm(PasswordChangeForm):
             raise forms.ValidationError('كلمة المرور غير مطابقة.')
         return cd['new_password2']
 
+class PasswordReset(SetPasswordForm):
+    new_password1 = forms.CharField(widget=forms.PasswordInput, min_length=8, error_messages=password_errors)
+    new_password2 = forms.CharField(widget=forms.PasswordInput, min_length=8, error_messages=password_errors)
+    
+    class Meta:
+        model = User
+        fields = ['new_password1', 'new_password2']
 
+    def clean_new_password1(self):
+        password = self.cleaned_data['new_password1']
+
+        # check for digit
+        if sum(c.isdigit() for c in password) < 1:
+            msg = 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.'
+            self.add_error('new_password1', msg)
+
+        # check for uppercase letter
+        if not any(c.isupper() for c in password):
+            msg = 'يجب أن تحتوي كلمة المرور على حرف واحد كبير على الأقل.'
+            self.add_error('new_password1', msg)
+
+        # check for lowercase letter
+        if not any(c.islower() for c in password):
+            msg = 'يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.'
+            self.add_error('new_password1', msg)
+            
+        return password
+
+    def clean_new_password2(self):
+        cd = self.cleaned_data
+        if cd['new_password1'] != cd['new_password2']:
+            raise forms.ValidationError('كلمة المرور غير مطابقة.')
+        return cd['new_password2']

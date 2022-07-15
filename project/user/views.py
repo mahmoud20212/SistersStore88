@@ -1,12 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .forms import UserCreationForm, UserUpdateForm, UserChangePasswordForm
 from .models import Customer
-from store.models import Order, OrderDone, Favorite
+from store.models import Order, Favorite
 
 # ============================================
 
@@ -19,14 +19,9 @@ def cart_items(request):
 def favorite_number(request):
     if request.user.is_authenticated:
         customer = request.user.customer
-        try:
-            favorite = Favorite.objects.get(customer=customer)
-            product = favorite.product.all().count()
-            return product
-        except Favorite.DoesNotExist:
-            customer = request.user.customer
-            favorite = Favorite.objects.create(customer=customer)
-            favorite.save()
+        favorite = Favorite.objects.get(customer=customer)
+        product = favorite.product.all().count()
+        return product
     return 0
 
 # ============================================
@@ -79,10 +74,10 @@ def userLogout(request):
 def userProfile (request):
     customer = request.user.customer
     orders = Order.objects.filter(customer=customer, complete=True)
-    all_order = []
-    for order in orders:
-        order_done = OrderDone.objects.filter(order=order)
-        all_order.append(order_done)
+    # all_order = []
+    # for order in orders:
+    #     order_done = OrderDone.objects.filter(order=order)
+    #     all_order.append(order_done)
 
     if request.method == 'POST':
         customer = Customer.objects.get(id=request.user.id)
@@ -101,11 +96,23 @@ def userProfile (request):
         
     context = {
         'u_form': u_form,
-        'order_done': all_order,
+        # 'order_done': all_order,
         'cart_items': cart_items(request),
         'favorite_number': favorite_number(request),
+        'orders': orders,
     }
     return render(request, 'user/profile.html', context)
+
+@login_required(login_url='login')
+def user_order(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if request.user.customer == order.customer:
+        context = {
+            'order': order,
+        }
+        return render(request, 'user/order.html', context)
+    else:
+        return HttpResponseForbidden()
 
 @login_required(login_url='login')
 def change_password(request):

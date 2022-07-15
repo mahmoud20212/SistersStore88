@@ -1,6 +1,11 @@
 {% extends 'base_generic.html' %}
 {% load static %}
 {% block content %}
+<style>
+    hr{
+        width: 100%;
+    }
+</style>
 <!-- Start Breadcrumb -->
 <div dir="rtl" class="container">
     <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
@@ -51,60 +56,61 @@
             <!-- End Filter -->
         </div>
 
-        {% if not products %}
-            <div class="text-center p-4 comment">
-                <h5 class="mb-0">لا يوجد منتجات.</h5>
-            </div>
-        {% endif %}
-        <!-- Product div -->
-        <div dir="rtl" class="row isotope-grid">
-            {% for product in products %}
-            
-            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                <!-- Block2 -->
-                <div class="block2">
-                    <div class="block2-pic hov-img0">
-                        {% if product.image %} 
-                            <img height="300px" style="object-fit:cover" src="{{product.image.url}}" alt="IMG-PRODUCT" />
-                        {% endif %}
+        {% if products %}
+            <!-- Product div -->
+            <div dir="rtl" class="row isotope-grid">
+                {% for product in products %}
+                
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                    <!-- Block2 -->
+                    <div class="block2">
+                        <div class="block2-pic hov-img0">
+                            {% if product.image %} 
+                                <img height="300px" style="object-fit:cover" src="{{product.image.url}}" alt="IMG-PRODUCT" />
+                            {% endif %}
 
-                        <a href="#"
-                            class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal{{forloop.counter}}">
-                            عرض سريع
-                        </a>
-                    </div>
-
-                    <div class="block2-txt flex-w flex-t p-t-14">
-                        <div class="block2-txt-child1 flex-col-l">
-                            <a href="{% url 'product_detail' product.pk %}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                {{product.name}}
+                            <a href="#"
+                                class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal{{forloop.counter}}">
+                                عرض سريع
                             </a>
-                            <span class="stext-105 cl3"> 
-                                {% if product.is_discount %}
-                                    <strong><span class="text-success ml-2">₪{{product.is_discount}}</span> <del class="text-danger">₪{{product.price}}</del></strong>
-                                {% else %}
-                                    <strong>₪{{product.price}}</strong>
-                                {% endif %}
-                            </span>
                         </div>
 
-                        <div class="block2-txt-child2 flex-r p-t-3">
-                            {% if product.status %}
-                                {% if product.status == 'New' %}
-                                    <span class="badge bg-primary ml-2">جديد</span>
-                                {% elif product.status == 'Sale' %}
-                                    <span class="badge bg-success ml-2">تخفيض السعر</span>
-                                {% else %}
-                                    <span class="badge bg-danger ml-2">انتهى</span>
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l">
+                                <a href="{% url 'product_detail' product.pk %}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    {{product.name}}
+                                </a>
+                                <span class="stext-105 cl3"> 
+                                    {% if product.is_discount %}
+                                        <strong><span class="text-success ml-2">₪{{product.is_discount}}</span> <del class="text-danger">₪{{product.price}}</del></strong>
+                                    {% else %}
+                                        <strong>₪{{product.price}}</strong>
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div class="block2-txt-child2 flex-r p-t-3">
+                                {% if product.status %}
+                                    {% if product.status == 'New' %}
+                                        <span class="badge bg-primary ml-2">جديد</span>
+                                    {% elif product.status == 'Sale' %}
+                                        <span class="badge bg-success ml-2">تخفيض السعر</span>
+                                    {% else %}
+                                        <span class="badge bg-danger ml-2">انتهى</span>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% include 'store/pagination.html' with page=products %}
+        {% else %}
+        <div class="text-center p-4 comment">
+            <h5 class="mb-0">لا يوجد منتجات.</h5>
         </div>
-        {% include 'store/pagination.html' with page=products %}
+        {% endif %}
         
     </div>
 </section>
@@ -167,10 +173,10 @@
                             {% endif %}
                         </span>
 
-                        <p style="border-bottom: 1px solid #ccc;" class="stext-102 cl3 p-t-23 border-bottom pb-3">
-                            {{product.description}}
+                        <p class="stext-102 cl3 p-t-23 border-bottom pb-3">
+                            {{product.description|safe}}
                         </p>
-
+                        <hr style="width: 100%;">
                         <!-- Info -->
                         <div class="my-info">
                             <div class="flex-w flex-r-m p-b-10 p-t-33 mt-3">

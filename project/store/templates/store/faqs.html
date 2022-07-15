@@ -1,0 +1,77 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .card .card-header .btn-link{
+        color: #222;
+        font-size: 16px;
+        text-decoration: none;
+        border-right: 4px solid #222;
+        padding-right: 10px;
+        word-break: break-word !important;
+    }
+    .card .card-header .btn-link:hover{
+        color: #6c7ae0;
+        border-right: 4px solid #6c7ae0;
+    }
+    .card .card-header .btn-link:focus{
+        color: #6c7ae0;
+        border-right: 4px solid #6c7ae0;
+    }
+    hr{
+        width: 100%;
+    }
+    .card-body img{
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+<!-- Start Breadcrumb -->
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            الأسئلة الشائعة
+        </span>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<section class="bg0 p-t-23 p-b-140">
+    <div dir="rtl" class="container">
+        <div class="p-b-10 mb-5">
+            <h3 class="ltext-103 cl5">الأسئلة الشائعة</h3>
+        </div>
+        {% if faqs %}
+        <div id="accordion">
+            {% for faq in faqs %}
+            <div class="card">
+              <div class="card-header" id="heading{{forloop.counter}}">
+                <h5 class="mb-0">
+                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapse{{forloop.counter}}">
+                    {{faq.title}}
+                  </button>
+                </h5>
+              </div>
+          
+              <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+                <div class="card-body">
+                    {{faq.description|safe}}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% include 'store/pagination.html' with page=faqs %}
+        {% else %}
+        <div class="text-center p-4 comment">
+            <h5 class="mb-0">لا يوجد أسئلة شائعة.</h5>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}
