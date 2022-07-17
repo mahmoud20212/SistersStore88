@@ -1,0 +1,105 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<style>
+    label{
+        font-size: 18px !important;
+    }
+    input{
+        font-size: 16px !important;
+    }
+    .main{
+        max-width: 800px;
+    }
+</style>
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <a href="{% url 'cart' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            عربة التسوق
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <a href="{% url 'checkout' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            طرق الدفع
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            الدفع عند الإستلام
+        </span>
+    </div>
+</div>
+<div class="">
+    <div class="myform">
+        <div class="main">
+            <legend class="form-title text-dark" align="center">الدفع عند الإستلام</legend>
+            <hr>
+            <form dir="rtl" class="form1" method="POST" action="">
+                {% csrf_token %}
+                <div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> الرجاء التأكد أن معلوماتك الشخصية صحيحة ليتم التواصل معك وإيصال المنتج لعنوانك وإذا لم تكن كذلك الرجاء تعديلها من خلال ملفك الشخصي ثم العودة لإكمال العملية. (<a class="text-primary bold" href="{% url 'profile' %}">تعديل ملفي الشخصي</a>)</div>
+                <div class="row">
+                    <div class="col-md mb-3 mt-3">
+                        <label class="stext-102 cl3" for="username"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
+                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.username}}" readonly/>
+                    </div>
+                    <div class="col-md mb-3 mt-3">
+                        <label class="stext-102 cl3" for="email"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
+                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="email" value="{{user.email}}" readonly/>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md mb-3">
+                        <label class="stext-102 cl3" for="first_name">الإسم الأول</label>
+                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" name="first_name" type="text" value="{{user.first_name}}" readonly />
+                    </div>
+                    <div class="col-md mb-3">
+                        <label class="stext-102 cl3" for="last_name">الإسم الأخير</label>
+                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" name="last_name" type="text" value="{{user.last_name}}" readonly />
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md mb-3">
+                        <label for="color"><i class="fa-solid fa-globe"></i> الدولة </label>
+                        <div class="">
+                            <div class="rs1-select2 bor8 bg-light">
+                                <select class="js-select2" name="country" required disabled>
+                                    <option {% if not user.customer.country %} selected {% endif %} disabled>اختر الدولة</option>
+                                    <option value="{{user.customer.country}}" selected>{{user.customer.country}}</option>
+                                </select>
+                                <div class="dropDownSelect2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md mb-3">
+                        <label for="color"><i class="fa-solid fa-city"></i> المدينة </label>
+                        <div class="">
+                            <div class="rs1-select2 bor8 bg-light">
+                                <select class="js-select2" name="city" required disabled>
+                                    <option {% if not user.customer.city %} selected {% endif %}>اختر المدينة</option>
+                                    <option value="{{user.customer.city}}" selected>{{user.customer.city}}</option>
+                                </select>
+                                <div class="dropDownSelect2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md mb-3">
+                        <label class="stext-102 cl3" for="location"><i class="fa-solid fa-location-dot"></i> عنوان السكن </label>
+                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" name="location" type="text" value="{{user.customer.location}}" readonly />
+                    </div>
+                    <div class="col-md mb-3">
+                        <label class="stext-102 cl3" for="phone_number"><i class="fa-solid fa-phone"></i> رقم الهاتف </label>
+                        <input dir="ltr" class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light text-right" name="phone_number" type="text" value="{{user.customer.phone_number}}" readonly />
+                    </div>
+                </div>
+                <hr class="w-100">
+                <div class="alert alert-success mt-4">
+                    <p class="mtext-101">السعر الكلي: {{order.get_cart_total}}₪</p>
+                </div>
+                <div class="text-center my-4">
+                    <button type="submit" class="btn btn-primary w-100">إستمرار</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

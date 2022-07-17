@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'ckeditor',
     'webpush',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -111,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jerusalem'
 
 USE_I18N = True
 
@@ -152,3 +153,7 @@ EMAIL_PORT = 587
 # STRIPE
 STRIPE_PUBLIC_KEY = "pk_test_1234"
 STRIPE_SECRET_KEY = "sk_test_1234"
+
+# PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'PS'

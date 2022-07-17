@@ -260,12 +260,12 @@
                                         <div class="row p-b-25">
                                             <div class="col-sm-6 p-b-5">
                                                 <label class="stext-102 cl3" for="name">الإسم*</label>
-                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name" placeholder="الإسم" />
+                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20 {% if user.is_authenticated %} bg-light {% endif %}" id="name" type="text" name="name" placeholder="الإسم" value="{% if user.is_authenticated %} {{user.first_name}} {{user.last_name}} {% endif %}" {% if user.is_authenticated %} readonly {% endif %} />
                                                 <span class="text-danger mb-3">{{form.errors.name}}</span>
                                             </div>
                                             <div class="col-sm-6 p-b-5">
                                                 <label class="stext-102 cl3" for="email">البريد الإلكتروني*</label>
-                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="email" name="email" placeholder="البريد الإلكتروني"/>
+                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20 {% if user.is_authenticated %} bg-light {% endif %}" id="email" type="email" name="email" placeholder="البريد الإلكتروني" value="{% if user.is_authenticated %} {{user.email}} {% endif %}" {% if user.is_authenticated %} readonly {% endif %}/>
                                                 <span class="text-danger mb-3">{{form.errors.email}}</span>
                                             </div>
                                             <div class="col-12 p-b-5 mt-3">
@@ -276,7 +276,7 @@
                                         </div>
 
                                         <button type="submit" class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
-                                              نشر &nbsp;<i class="fa-solid fa-paper-plane"></i>
+                                            نشر &nbsp;<i class="fa-solid fa-paper-plane"></i>
                                         </button>
                                     </form>
                                 </div>

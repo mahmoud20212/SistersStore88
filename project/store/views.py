@@ -1,5 +1,5 @@
-import string  
-import secrets # import package 
+# import string  
+# import secrets # import package 
 import json
 import stripe
 from django.conf import settings
@@ -293,9 +293,8 @@ def checkout(request):
     order, created = Order.objects.get_or_create(customer=customer, complete=False)
     cart = Cart.objects.filter(order=order).exists()
     if cart:
-
-        if not customer.phone_number or not customer.location or not request.user.first_name or not request.user.last_name:
-            messages.warning(request, 'الرجاء تعبئة الحقول الفارغة.')
+        if not customer.phone_number or not customer.location or not customer.country or not customer.city or not request.user.first_name or not request.user.last_name:
+            messages.warning(request, 'الرجاء إكمال جميع البيانات الشخصية.')
             return HttpResponseRedirect(reverse('profile'))
         else:
             items = order.cart_set.all()
@@ -326,9 +325,10 @@ def processOrder(request):
         if order.get_cart_total == int(data['total']) and data['ok'] == True:
             order.complete = True
             order.total = order.get_cart_total
-            order.date_orderd = timezone.now()
-            res = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(10))
-            order.code = str(res)
+            order.orderd_date = timezone.now()
+            # res = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(10))
+            # order.code = str(res)
+            order.payment_method = 'paypal'
             if order.coupon:
                 order.coupon_discount = order.coupon.discount
 
@@ -341,7 +341,7 @@ def processOrder(request):
                 else:
                     product_price = i.product.price
 
-                myDoneOrder = OrderDone.objects.create(order=order, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity)
+                myDoneOrder = OrderDone.objects.create(order=order, image=i.product.image, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity)
                 myDoneOrder.save()
             
             Cart.objects.filter(order=order).delete()
@@ -419,6 +419,77 @@ def favorite(request):
 
     return render(request, 'store/favorite.html', context)
 
+@login_required(login_url='login')
+def paiement_when_recieving(request):
+    customer = request.user.customer
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    cart = Cart.objects.filter(order=order).exists()
+    if cart:
+        if not customer.phone_number or not customer.location or not customer.country or not customer.city or not request.user.first_name or not request.user.last_name:
+            messages.warning(request, 'الرجاء إكمال جميع البيانات الشخصية.')
+            return HttpResponseRedirect(reverse('profile'))
+        else:
+            if request.method == 'POST':
+                items = order.cart_set.all()
+                
+                order.complete = True
+                order.total = order.get_cart_total
+                order.orderd_date = timezone.now()
+                # res = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(10))
+                # order.code = str(res)
+                order.payment_method = 'paiement when recieving'
+                if order.coupon:
+                    order.coupon_discount = order.coupon.discount
 
+                order.save()
+
+                for i in items:
+
+                    if i.product.is_discount:
+                        product_price = i.product.is_discount
+                    else:
+                        product_price = i.product.price
+
+                    myDoneOrder = OrderDone.objects.create(order=order, image=i.product.image, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity)
+                    myDoneOrder.save()
+                
+                Cart.objects.filter(order=order).delete()
+                superusers = User.objects.filter(is_superuser=True)
+                payload = {"head": "SistersStore", "body": f" قام المستخدم {order.customer} بطلب طلب جديد. "}
+                send_user_notification(user=superusers[0], payload=payload, ttl=1000)
+                messages.success(request, 'تمت العملية بنجاح... يمكنك الآن رؤية الطلبات الخاصة بك.')
+                return HttpResponseRedirect(reverse('profile'))
+            
+            context = {
+                'order': order,
+                'cart_items': cart_items(request),
+                'favorite_number': favorite_number(request),
+            }
+    else:
+        messages.warning(request, 'عربة التسوق فارغة لا يمكن إجارء العملية.')
+        return HttpResponseRedirect(reverse('cart'))
+    
+    return render(request, 'store/payment/recieving_payment.html', context)
+
+@login_required(login_url='login')
+def paypal_payment(request):
+    customer = request.user.customer
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    cart = Cart.objects.filter(order=order).exists()
+    if cart:
+        if not customer.phone_number or not customer.location or not customer.country or not customer.city or not request.user.first_name or not request.user.last_name:
+            messages.warning(request, 'الرجاء إكمال جميع البيانات الشخصية.')
+            return HttpResponseRedirect(reverse('profile'))
+        else:
+            context = {
+                'order': order,
+                'cart_items': cart_items(request),
+                'favorite_number': favorite_number(request),
+            }
+    else:
+        messages.warning(request, 'عربة التسوق فارغة لا يمكن إجارء العملية.')
+        return HttpResponseRedirect(reverse('cart'))
+
+    return render(request, 'store/payment/paypal_payment.html', context)
 
 

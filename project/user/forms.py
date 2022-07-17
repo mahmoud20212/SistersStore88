@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from phonenumber_field.modelfields import PhoneNumberField
+from user.models import Customer
 
 username_errors = {
     'required': 'هذا الحقل مطلوب.',
@@ -83,13 +85,6 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError('هذا البريد الإلكتروني مسجل مسبقا.')
         return cd['email']
 
-class UserUpdateForm(forms.ModelForm):
-    first_name = forms.CharField(min_length=4, error_messages=first_name_errors)
-    last_name = forms.CharField(min_length=4, error_messages=last_name_errors)
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name']
-
 class UserChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput, error_messages=errors_required)
     new_password1 = forms.CharField(widget=forms.PasswordInput, min_length=8, error_messages=password_errors)
@@ -158,3 +153,16 @@ class PasswordReset(SetPasswordForm):
         if cd['new_password1'] != cd['new_password2']:
             raise forms.ValidationError('كلمة المرور غير مطابقة.')
         return cd['new_password2']
+
+class UserUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(min_length=4, error_messages=first_name_errors)
+    last_name = forms.CharField(min_length=4, error_messages=last_name_errors)
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+class CustomerUpdateForm(forms.ModelForm):
+    phone_number = PhoneNumberField()
+    class Meta:
+        model = Customer
+        fields = ['phone_number', 'location', 'country', 'city']

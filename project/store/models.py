@@ -1,3 +1,5 @@
+import string  
+import secrets # import package 
 from django.db import models
 from django.utils import timezone
 from user.models import Customer
@@ -110,10 +112,16 @@ class Order(models.Model):
         ('in the way','in the way'),
         ('delivered','delivered'),
     )
+    METHOD = (
+        ('paypal','paypal'),
+        ('credit card','credit card'),
+        ('paiement when recieving','paiement when recieving'),
+    )
     code = models.CharField(blank=True, null=True, max_length=10)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     created_in = models.DateTimeField(default=timezone.now)
-    date_orderd = models.DateTimeField(blank=True, null=True)
+    orderd_date = models.DateTimeField(blank=True, null=True)
+    payment_method = models.CharField(max_length=50, choices=METHOD, blank=True, null=True)
     status = models.CharField(max_length=50, choices=STATUSES, default=STATUSES[0][0], blank=True, null=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
@@ -122,7 +130,21 @@ class Order(models.Model):
     done = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.customer.user.username)
+        return f'{self.customer}'
+
+    def full_name(self):
+        return f'{self.customer.user.first_name} {self.customer.user.last_name}'
+
+    def location(self):
+        return f'{self.customer.location}'
+
+    def phone_number(self):
+        return f'{self.customer.phone_number}'
+
+    def save(self, *args, **kwargs):
+        res = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(10))
+        self.code = str(res)
+        return super().save(*args, **kwargs)
     
     @property
     def get_cart_total(self):
@@ -170,6 +192,7 @@ class Cart(models.Model):
 
 class OrderDone(models.Model):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
     product = models.CharField(max_length=50, null=True)
     product_price = models.PositiveIntegerField(null=True)
     color = models.CharField(max_length=50, null=True)

@@ -130,104 +130,15 @@
                         </div>
                     </div>
                     <p class="bor12"></p>
-                    <p id="error" class="hidden alert alert-danger">يرجى التحقق من المعلومات الخاصة بك للمتابعة.</p>
-                    <div class="p-t-15 p-b-30 show-payment">
-                        <button onclick="paypal2()" class="w-100 btn btn-primary"><h3>PayPal</h3></button>
-                        <button class="w-100 btn btn-dark mt-3"><h3>Visa Card</h3></button>
+                    <div class="p-t-15 p-b-30">
+                        <a href="{% url 'paypal_payment' %}" class="w-100 btn btn-primary"><h4>PayPal</h4></a>
+                        <button class="w-100 btn btn-dark mt-3"><h4>Visa Card</h4></button>
+                        <a href="{% url 'payment_recieving' %}" class="w-100 btn btn-secondary mt-3"><h4>الدفع عند الإستلام</h4></a>
                     </div>
-                    <div class="hidden p-t-15" id="paypal-button-container"></div>
-                    <a href="{% url 'checkout' %}" class="btn btn-dark hidden back mt-3 w-100">إلغاء</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script>
-    function paypal2(){
-        $('.show-payment').addClass('hidden')
-        $('#Btn').addClass('hidden')
-        $('.back').removeClass('hidden')
-        $('#paypal-button-container').removeClass('hidden')
-    }
-</script>
-<script src="https://www.paypal.com/sdk/js?client-id=ARCJNWqnEqsL_MeQ-JUCVzKNLmBDmHpqhh9mRPlbsylxx5zd2fRfJ5Sysh26mR4iD7XoXzZLeStYydvF&currency=ILS&disable-funding=credit,card"></script>
-<script>
-    var total = '{{order.get_cart_total}}'
-    paypal.Buttons({
-
-        onClick: function(data, actions){
-            var url = '/process_order/'
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                },
-                body: JSON.stringify({
-                    total: total,
-                    ok: false,
-                })
-            })
-            .then((response) =>{
-                return response.json()
-            })
-            .then((data) =>{
-                if(data == "Payment Complate"){
-                    return actions.resolve();
-                }else{
-                    document.querySelector('#error').classList.remove('hidden');
-                    location.reload()
-                }
-            })
-    
-        },
-
-        // Sets up the transaction when a payment button is clicked
-        createOrder: (data, actions) => {
-            return actions.order.create({
-            purchase_units: [{
-                amount: {
-                value: parseFloat(total).toFixed(2) // Can also reference a variable or function
-                }
-            }]
-            });
-        },
-
-        // Finalize the transaction after payer approval
-        onApprove: (data, actions) => {
-            return actions.order.capture().then(function(orderData) {
-                // Successful capture! For dev/demo purposes:
-                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                const transaction = orderData.purchase_units[0].payments.captures[0];
-                // alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
-                payment()
-                // alert('شكرا لك تمت العملية بنجاح.')
-            });
-        }
-    }).render('#paypal-button-container');
-
-
-    function payment(){
-        var url = '/process_order/'
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify({
-                total: total,
-                ok: true,
-            })
-        })
-        .then((response) =>{
-            return response.json()
-        })
-        .then((data) =>{
-            window.location.href = '/profile/'
-        })
-    
-    }
-</script>
 
 {% endblock content %}

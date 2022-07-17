@@ -35,34 +35,76 @@
                         <form class="form1" method="POST" action="">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="col-sm">
-                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
+                                <div class="col-sm mb-3 mt-3">
+                                    <label class="stext-102 cl3" for="username"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
                                     <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.username}}" readonly/>
                                 </div>
-                                <div class="col-sm">
-                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.email}}" readonly/>
+                                <div class="col-sm mb-3 mt-3">
+                                    <label class="stext-102 cl3" for="email"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="email" value="{{user.email}}" readonly/>
                                 </div>
                                 <div class="w-100"></div>
-                                <div class="col-sm">
-                                    <label class="stext-102 cl3 mt-3" for="name">الإسم الأول</label>
+                                <div class="col-sm mb-3">
+                                    <label class="stext-102 cl3" for="first_name">الإسم الأول</label>
                                     <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="first_name" type="text" value="{% if u_form.first_name.value %} {{u_form.first_name.value}} {% endif %}" />
-                                    <span class="text-danger mb-3">{{u_form.errors.first_name}}</span>
+                                    <span class="text-danger">{{u_form.errors.first_name}}</span>
                                 </div>
-                                <div class="col-sm">
-                                    <label class="stext-102 cl3 mt-3" for="name">الإسم الأخير</label>
+                                <div class="col-sm mb-3">
+                                    <label class="stext-102 cl3" for="last_name">الإسم الأخير</label>
                                     <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="last_name" type="text" value="{% if u_form.last_name.value %} {{u_form.last_name.value}} {% endif %}" />
-                                    <span class="text-danger mb-3">{{u_form.errors.last_name}}</span>
+                                    <span class="text-danger">{{u_form.errors.last_name}}</span>
                                 </div>
                                 <div class="w-100"></div>
-                                <div class="col-sm">
-                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-solid fa-phone"></i> رقم الهاتف </label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="phone_number" type="text" value="{% if user.customer.phone_number %} {{user.customer.phone_number}} {% endif %}" />
+                                <div class="col-sm mb-3">
+                                    <label for="color"><i class="fa-solid fa-globe"></i> الدولة </label>
+                                    <div class="">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="country" required>
+                                                <option {% if not user.customer.country %} selected {% endif %} disabled>اختر الدولة</option>
+                                                {% for country in countries %}
+                                                    {% if country == user.customer.country %}
+                                                    <option value="{{country.id}}" selected>{{country}}</option>
+                                                    {% else %}
+                                                    <option value="{{country.id}}">{{country}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{c_form.errors.country}}</span>
                                 </div>
-                                <div class="col-sm">
-                                    <label class="stext-102 cl3 mt-3" for="name"><i class="fa-solid fa-location-dot"></i> عنوان السكن </label>
+                                <div class="col-sm mb-3">
+                                    <label for="color"><i class="fa-solid fa-city"></i> المدينة </label>
+                                    <div class="">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="city" required>
+                                                <option {% if not user.customer.city %} selected {% endif %} disabled>اختر المدينة</option>
+                                                {% for city in cities %}
+                                                    {% if city == user.customer.city %}
+                                                    <option value="{{city.id}}" selected>{{city}}</option>
+                                                    {% else %}
+                                                    <option value="{{city.id}}">{{city}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{c_form.errors.city}}</span>
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-sm mb-3">
+                                    <label class="stext-102 cl3" for="location"><i class="fa-solid fa-location-dot"></i> عنوان السكن </label>
                                     <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="location" type="text" value="{% if user.customer.location %} {{user.customer.location}} {% endif %}" />
+                                    <span class="text-danger">{{c_form.errors.location}}</span>
                                 </div>
+                                <div class="col-sm mb-3">
+                                    <label class="stext-102 cl3" for="phone_number"><i class="fa-solid fa-phone"></i> رقم الهاتف </label>
+                                    <input dir="ltr" class="size-111 bor8 stext-102 cl2 p-lr-20 text-right" name="phone_number" type="tel" value="{% if user.customer.phone_number %} {{user.customer.phone_number}} {% endif %}" />
+                                    <span class="text-danger">{{c_form.errors.phone_number}}</span>
+                                </div>
+                                
                             </div>
                             <div class="text-center my-5">
                                 <button type="submit" class="btn btn-primary">
@@ -87,7 +129,7 @@
                                 {% for order in orders %}
                                 <div style="border-radius: 3px;" class="row bg-light mb-3 py-2">
                                     <div class="col-sm p-1">
-                                        <b style="vertical-align: -8px;">الطلب ({{forloop.counter}})</b>
+                                        <h5>الطلب ({{forloop.counter}})</h5>
                                     </div>
                                     <div class="col-sm p-1">
                                         <a class="btn btn-primary" href="{% url 'order' order.pk %}">عرض التفاصيل <i class="fa-solid fa-eye"></i></a>
@@ -110,14 +152,14 @@
                             </p>
                             <div class="row">
                                 <div class="col-sm p-1">
-                                    <b style="vertical-align: -9px;">إدارة الإشعارات</b>
+                                    <h5>إدارة الإشعارات</h5>
                                 </div>
                                 <div class="col-sm p-1">
                                     {% webpush_button with_class="btn btn-primary" %}
                                 </div>
                                 <div class="w-100"></div>
                                 <div class="col-sm p-1">
-                                    <b style="vertical-align: -9px;">تغير كلمة مرور الحساب</b>
+                                    <h5>تغير كلمة مرور الحساب</h5>
                                 </div>
                                 <div class="col-sm p-1">
                                     <a href="{% url 'change_password' %}" class="btn btn-primary">

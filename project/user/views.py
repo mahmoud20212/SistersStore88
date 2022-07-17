@@ -4,8 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreationForm, UserUpdateForm, UserChangePasswordForm
-from .models import Customer
+from .forms import UserCreationForm, UserUpdateForm, UserChangePasswordForm, CustomerUpdateForm
+from .models import Customer, Country, City
 from store.models import Order, Favorite
 
 # ============================================
@@ -74,32 +74,43 @@ def userLogout(request):
 def userProfile (request):
     customer = request.user.customer
     orders = Order.objects.filter(customer=customer, complete=True)
-    # all_order = []
-    # for order in orders:
-    #     order_done = OrderDone.objects.filter(order=order)
-    #     all_order.append(order_done)
+    countries = Country.objects.all()
+    cities = City.objects.all()
+    u_form = UserUpdateForm(instance=request.user)
+    c_form = CustomerUpdateForm(instance=customer)
 
     if request.method == 'POST':
-        customer = Customer.objects.get(id=request.user.id)
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        
-        customer.phone_number = request.POST.get('phone_number')
-        customer.location = request.POST.get('location')
+        c_form = CustomerUpdateForm(request.POST, instance=customer)
 
-        if u_form.is_valid():
+        if u_form.is_valid() and c_form.is_valid():
+            data = c_form.save(commit=False)
+            if c_form.cleaned_data['city']: 
+                if c_form.cleaned_data['country']:
+                    city = City.objects.get(city=c_form.cleaned_data['city'])
+                    country = Country.objects.get(country=c_form.cleaned_data['country'])
+                    if city.country == country:
+                        data.city = city
+                    else:
+                        messages.warning(request, 'هذه المدينة ليست ضمن هذه الدولة.')
+                        return HttpResponseRedirect(reverse('profile'))
+                else:
+                    messages.warning(request, 'الرجاء تحديد الدولة أولا.')
+                    return HttpResponseRedirect(reverse('profile'))
+            
+            data.save()
             u_form.save()
-            customer.save()
             messages.success(request, 'تم تحديث الملف الشخصي.')
-            return HttpResponseRedirect(reverse('profile'))    
-    else:
-        u_form = UserUpdateForm(instance=request.user)
+            return HttpResponseRedirect(reverse('profile'))      
         
     context = {
         'u_form': u_form,
-        # 'order_done': all_order,
+        'c_form': c_form,
         'cart_items': cart_items(request),
         'favorite_number': favorite_number(request),
         'orders': orders,
+        'countries': countries,
+        'cities': cities,
     }
     return render(request, 'user/profile.html', context)
 

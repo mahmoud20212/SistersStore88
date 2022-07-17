@@ -1,6 +1,12 @@
 {% extends 'base_generic.html' %}
 {% block content %}
 
+<style>
+    td{
+        vertical-align: middle !important;
+    }
+</style>
+
 <!-- Start Breadcrumb -->
 <div dir="rtl" class="container">
     <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
@@ -26,7 +32,7 @@
         </div>
         <div style="border-radius: 5px;" class="row p-3 text-center bg-light mb-5 mx-1">
             <div class="col-md py-3 my-2 bg-white">
-                <h5>الحالة: {% if order.status == 'under construction' %} <span class="text-danger">قيد الإنشاء <i class="fa-solid fa-screwdriver-wrench"></i></span> {% elif order.status == 'in store' %} <span class="text-warning">في المخزن <i class="fa-solid fa-store"></i></span>  {% elif order.status == 'in the way' %} <span class="text-primary">في الطريق <i class="fa-solid fa-truck"></i></span> {% else %} <span class="text-success">تم الإستلام <i class="fa-solid fa-circle-check"></i></span> {% endif %}</h5>
+                <h5>الحالة: {% if order.status == 'under construction' %} <span class="text-danger">قيد الإنشاء <i class="fa-solid fa-screwdriver-wrench"></i></span> {% elif order.status == 'in store' %} <span class="text-warning">في المخزن <i class="fa-solid fa-store"></i></span>  {% elif order.status == 'in the way' %} <span class="text-primary">في الطريق <i class="fa-solid fa-truck"></i></span> {% elif order.status == 'delivered' %} <span class="text-success">تم الإستلام <i class="fa-solid fa-circle-check"></i></span> {% else %} --- {% endif %}</h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
                 <h5>اكتمل: {% if order.done %} <span class="text-success"> <i class="fa-solid fa-circle-check"></i></span> {% else %} <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span></span> {% endif %}</h5>
@@ -38,38 +44,47 @@
                 <h5 style="color: #6c7ae0;"><b>إجمالي السعر: {{order.total}}₪</b></h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
+                <h5>طريقة الدفع: {% if order.payment_method == 'paypal' %} <span class="text-primary">PayPal</span> {% elif order.payment_method == 'credit card' %} <span class="text-dark">credit card</span>  {% elif order.payment_method == 'paiement when recieving' %} <span class="text-secondary">عند الإستلام</span>{% else %} --- {% endif %}</h5>
+            </div>
+            <div class="col-md py-3 my-2 bg-white">
                 <h5>رمز الطلب: {{order.code}}</h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
                 <h5>
-                    {{order.date_orderd|date:'f A'}}
+                    {{order.orderd_date|date:'h:i:s A'}}
                     <br>
-                    {{order.date_orderd|date:'j / n / o'}}
+                    {{order.orderd_date|date:'j / n / o'}}
                 </h5>
             </div>
         </div>
-        <table class="table table-striped">
-            <thead>
-                <tr class="table-light">
-                    <th class="text-center" scope="col">المنتج</th>
-                    <th class="text-center" scope="col">السعر</th>
-                    <th class="text-center" scope="col">اللون</th>
-                    <th class="text-center" scope="col">المقاس</th>
-                    <th class="text-center" scope="col">الكمية</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in order.orderdone_set.all %}
-                <tr>
-                    <th class="text-center">{{item.product}}</th>
-                    <td class="text-center">₪{{item.product_price}}</td>
-                    <td class="text-center">{{item.color}}</td>
-                    <td class="text-center">{{item.size}}</td>
-                    <td class="text-center">{{item.quantity}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="table-light">
+                        <th class="text-center" scope="col">صورة المنتج</th>
+                        <th class="text-center" scope="col">إسم المنتج</th>
+                        <th class="text-center" scope="col">السعر</th>
+                        <th class="text-center" scope="col">اللون</th>
+                        <th class="text-center" scope="col">المقاس</th>
+                        <th class="text-center" scope="col">الكمية</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.orderdone_set.all %}
+                    <tr>
+                        <th class="text-center">
+                            <img width="65px" src="{{item.image.url}}" alt="{{item.product}}">
+                        </th>
+                        <td class="text-center"><b>{{item.product}}</b></td>
+                        <td class="text-center"><b>₪{{item.product_price}}</b></td>
+                        <td class="text-center"><b>{{item.color}}</b></td>
+                        <td class="text-center"><b>{{item.size}}</b></td>
+                        <td class="text-center"><b>{{item.quantity}}</b></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 
