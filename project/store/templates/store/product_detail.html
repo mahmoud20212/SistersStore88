@@ -81,7 +81,13 @@
                             <strong>₪{{product.price}}</strong>
                         {% endif %}
                     </span>
-
+                    <div class="mt-3">
+                        {% if product.status == 'Ended' %}
+                        <strong class="text-dark">التوفر: <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span></strong>
+                        {% else %}
+                        <strong class="text-dark">التوفر: <span class="text-success"> <i class="fa-solid fa-circle-check"></i></span></strong>
+                        {% endif %}
+                    </div>
                     <p class="stext-102 cl3 p-t-23 pb-3">
                         {{product.description|safe}}
                     </p>
@@ -96,10 +102,16 @@
 
                             <div class="size-204 respon6-next">
                                 <div class="rs1-select2 bor8 bg0">
-                                    <select class="js-select2" name="color" required>
+                                    <select class="js-select2" name="color" id="activitySelector" onchange="update()">
+                                        {% if not color_cc %}
                                         <option selected disabled>اختر اللون</option>
-                                        {% for color in product.color.all %}
-                                            <option value="{{color}}">{{color}}</option>
+                                        {% endif %}
+                                        {% for color in product.productinfo_set.all %}
+                                            {% if color.color == color_cc %}
+                                            <option value="{{color.color}}" selected>{{color.color}}</option>
+                                            {% else %}
+                                            <option value="{{color.color}}">{{color.color}}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                     <div class="dropDownSelect2"></div>
@@ -109,17 +121,21 @@
 
                         <div class="flex-w flex-r-m">
                             <div class="size-203 flex-c-m respon6">المقاس</div>
+                            {% if size %}
                             <div class="size-204 respon6-next">
                                 <div class="rs1-select2 bor8 bg0">
                                     <select class="js-select2" name="size" required>
                                         <option selected disabled>اختر المقاس</option>
-                                        {% for size in product.size.all %}
+                                        {% for size in size %}
                                             <option value="{{size}}">{{size}}</option>
                                         {% endfor %}
                                     </select>
                                     <div class="dropDownSelect2"></div>
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="alert alert-warning size-204 respon6-next"><i class="fa-solid fa-triangle-exclamation"></i> قم بتحديد اللون اولا لعرض المقاسات</div>
+                            {% endif %}
                         </div>
 
                         <div class="flex-w flex-r-m p-b-33 mt-3">
@@ -187,21 +203,12 @@
                                         <span class="stext-102 cl3 size-205"> الألوان: </span>
 
                                         <span class="stext-102 cl6 size-206">
-                                            {% for color in product.color.all %}
-                                            <span class="badge badge-pill badge-light">{{color}}</span>
+                                            {% for color in product.productinfo_set.all %}
+                                            <span class="badge badge-pill badge-light">{{color.color}}</span>
                                             {% endfor %}
                                         </span>
                                     </li>
 
-                                    <li class="flex-w flex-t p-b-7 mb-2">
-                                        <span class="stext-102 cl3 size-205"> المقاسات: </span>
-
-                                        <span class="stext-102 cl6 size-206">
-                                            {% for size in product.size.all %}
-                                            <span style="background-color: #a29bfe;" class="badge badge-pill">{{size}}</span>
-                                            {% endfor %}
-                                        </span>
-                                    </li>
                                     <li class="flex-w flex-t p-b-7">
                                         <span class="stext-102 cl3 size-205">الوسم:</span>
                                         <span class="stext-102 cl6 size-206">
@@ -293,45 +300,13 @@
     </div>
 </section>
 {% rand %}
-<!-- <script>
-    var updateBtns = document.getElementsByClassName('update-cart');
-    for(var i = 0; i < updateBtns.length; i++){
-        updateBtns[i].addEventListener('click', function(){
-            var productId = this.dataset.product
-            var action = this.dataset.action
-
-            if (user === 'AnonymousUser'){
-                console.log('not log in')
-            }else{
-                updateUserOrder(productId, action)
-            }
-        })
+<script>
+    function update() {
+        var select = document.getElementById('activitySelector');
+        var option = select.options[select.selectedIndex];
+        window.location.href = `{% url 'product_detail' product.id %}?color=${option.value}`
     }
-    function updateUserOrder(productId, action){
-        // var csrftoken = document.querySelector('[name="csrfmiddlewaretoken"]');
-        var url = '/update_cart/'
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify({
-                'productId': productId,
-                'action': action,
-            })
-        })
-        .then((response) =>{
-            return response.json()
-        })
-        .then((data) =>{
-            console.log('data: ', data)
-            location.reload()
-        })
-    }
-
-</script> -->
+</script>
 <script>
     element2 = document.getElementById('require')
     if (element2.innerText == 'This field is required.'){

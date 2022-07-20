@@ -15,10 +15,13 @@
     </div>
 </div>
 
-{% if items %}
 <!-- Shoping Cart -->
-<div dir="rtl" class="bg0 p-t-75 p-b-85">
+<div dir="rtl" class="bg0 p-t-23 p-b-140">
     <div class="container">
+        <div class="p-b-10 mb-5">
+            <h3 class="ltext-103 cl5">عربة التسوق</h3>
+        </div>
+        {% if items %}
         <div class="row">
             <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
                 <div class="m-l-25 m-r--38 m-lr-0-xl">
@@ -193,8 +196,16 @@
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="container">
+            <div class="text-center p-4 comment">
+                <h5 class="mb-0">عربة التسوق فارغة.</h5>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
+{% if items %}
 <script>
     var updateBtns = document.getElementsByClassName('update-cart');
     for(var i = 0; i < updateBtns.length; i++){
@@ -243,13 +254,5 @@
     }
 
 </script>
-{% else %}
-<div dir="rtl" class="bg0 p-t-75 p-b-85">
-    <div class="container">
-        <div class="text-center p-4 comment">
-            <h5 class="mb-0">عربة التسوق فارغة.</h5>
-        </div>
-    </div>
-</div>
 {% endif %}
 {% endblock content %}

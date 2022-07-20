@@ -35,13 +35,13 @@
                 <h5>الحالة: {% if order.status == 'under construction' %} <span class="text-danger">قيد الإنشاء <i class="fa-solid fa-screwdriver-wrench"></i></span> {% elif order.status == 'in store' %} <span class="text-warning">في المخزن <i class="fa-solid fa-store"></i></span>  {% elif order.status == 'in the way' %} <span class="text-primary">في الطريق <i class="fa-solid fa-truck"></i></span> {% elif order.status == 'delivered' %} <span class="text-success">تم الإستلام <i class="fa-solid fa-circle-check"></i></span> {% else %} --- {% endif %}</h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
-                <h5>اكتمل: {% if order.done %} <span class="text-success"> <i class="fa-solid fa-circle-check"></i></span> {% else %} <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span></span> {% endif %}</h5>
+                <h5>اكتمل: {% if order.done %} <span class="text-success"> <i class="fa-solid fa-circle-check"></i></span> {% else %} <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span> {% endif %}</h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
                 <h5>الكوبون: {% if order.coupon %} <span class="text-success">{{order.coupon}} (%{{order.coupon_discount}})</span> {% else %} <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span> {% endif %}</h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
-                <h5 style="color: #6c7ae0;"><b>إجمالي السعر: {{order.total}}₪</b></h5>
+                <h5 style="color: #6c7ae0;"><b> السعر الكلي: {{order.total}}₪</b></h5>
             </div>
             <div class="col-md py-3 my-2 bg-white">
                 <h5>طريقة الدفع: {% if order.payment_method == 'paypal' %} <span class="text-primary">PayPal</span> {% elif order.payment_method == 'credit card' %} <span class="text-dark">credit card</span>  {% elif order.payment_method == 'paiement when recieving' %} <span class="text-secondary">عند الإستلام</span>{% else %} --- {% endif %}</h5>
@@ -67,6 +67,7 @@
                         <th class="text-center" scope="col">اللون</th>
                         <th class="text-center" scope="col">المقاس</th>
                         <th class="text-center" scope="col">الكمية</th>
+                        <th class="text-center" scope="col">إجمالي السعر</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,6 +81,7 @@
                         <td class="text-center"><b>{{item.color}}</b></td>
                         <td class="text-center"><b>{{item.size}}</b></td>
                         <td class="text-center"><b>{{item.quantity}}</b></td>
+                        <td class="text-center"><b>₪{{item.total}}</b></td>
                     </tr>
                     {% endfor %}
                 </tbody>

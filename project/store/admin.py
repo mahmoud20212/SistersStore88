@@ -8,17 +8,22 @@ class PhotoInLine(admin.TabularInline):
     extra = 1
     min_num = 1
 
+class ProductInfoInLine(admin.TabularInline):
+    model = ProductInfo
+    extra = 1
+    min_num = 1
+
 class OrderDoneInLine(admin.TabularInline):
     model = OrderDone
     extra = 0
-
+    readonly_fields = ['product', 'product_price', 'color', 'size', 'quantity', 'total', 'date_added']
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name','price', 'status', 'discount', 'category', 'date_created')
-    inlines = [PhotoInLine,]
+    inlines = [ProductInfoInLine, PhotoInLine]
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'full_name', 'location', 'phone_number', 'payment_method', 'orderd_date', 'status', 'code', 'coupon', 'total', 'complete', 'done')
+    list_display = ('customer', 'full_name', 'location', 'phone_number', 'payment_method', 'status', 'code', 'total', 'complete', 'done')
     list_filter = ('complete','done')
     inlines = [OrderDoneInLine,]
     search_fields = ('code',)

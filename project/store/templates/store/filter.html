@@ -42,6 +42,18 @@
                 </li>
 
                 <li class="p-b-6">
+                    <a href="{% url 'product_list' %}?status=ended" class="filter-link stext-106 trans-04">
+                        انتهى
+                    </a>
+                </li>
+
+                <li class="p-b-6">
+                    <a href="{% url 'product_list' %}?status=sale" class="filter-link stext-106 trans-04">
+                        تخفيض السعر
+                    </a>
+                </li>
+
+                <li class="p-b-6">
                     <a href="{% url 'product_list' %}?sort=l2h" class="filter-link stext-106 trans-04">
                         السعر من الارخص الى الاعلى
                     </a>

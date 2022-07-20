@@ -36,7 +36,7 @@
 <div class="">
     <div class="myform">
         <div class="main">
-            <legend class="form-title text-dark" align="center"><i style="font-size: 30px;">PayPal</i></legend>
+            <legend class="form-title text-dark text-center"><i style="font-size: 30px;">PayPal</i></legend>
             <hr>
             <div dir="rtl" class="form1">
                 <div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> الرجاء التأكد أن معلوماتك الشخصية صحيحة ليتم التواصل معك وإيصال المنتج لعنوانك وإذا لم تكن كذلك الرجاء تعديلها من خلال ملفك الشخصي ثم العودة لإكمال العملية. (<a class="text-primary bold" href="{% url 'profile' %}">تعديل ملفي الشخصي</a>)</div>
@@ -153,7 +153,7 @@
             return actions.order.create({
             purchase_units: [{
                 amount: {
-                value: parseFloat(total).toFixed(2) // Can also reference a variable or function
+                    value: parseFloat(total).toFixed(2)
                 }
             }]
             });

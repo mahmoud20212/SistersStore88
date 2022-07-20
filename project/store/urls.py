@@ -18,4 +18,7 @@ urlpatterns = [
     path('add_favorite/<int:pk>/', views.add_favorite, name='add_favorite'),
     path('favorite/', views.favorite, name='favorite'),
     path('faqs/', views.faqs, name='faqs'),
+    path('payment_methods/', views.payment_methods, name='payment_methods'),
+    path('other/', views.other, name='other'),
+    path('our_policy/', views.our_policy, name='our_policy'),
 ]

@@ -22,16 +22,16 @@ def change_status_for_order(sender, instance, created, **kwargs):
         if instance.complete:
             user = User.objects.get(customer=instance.customer)
             if instance.status == 'under construction':
-                payload = {"head": "SistersStore", "body": "تم تحديث حالة الطلب لديك الى قيد الإنشاء"}
+                payload = {"head": "Sisters Store", "body": "تم تحديث حالة الطلب لديك الى قيد الإنشاء"}
                 send_user_notification(user=user, payload=payload, ttl=1000)
             elif instance.status == 'in store':
-                payload = {"head": "SistersStore", "body": "تم تحديث حالة الطلب لديك الى في المخزن"}
+                payload = {"head": "Sisters Store", "body": "تم تحديث حالة الطلب لديك الى في المخزن"}
                 send_user_notification(user=user, payload=payload, ttl=1000)
             elif instance.status == 'in the way':
-                payload = {"head": "SistersStore", "body": "تم تحديث حالة الطلب لديك الى في الطريق"}
+                payload = {"head": "Sisters Store", "body": "تم تحديث حالة الطلب لديك الى في الطريق"}
                 send_user_notification(user=user, payload=payload, ttl=1000)
             elif instance.status == 'delivered':
-                payload = {"head": "SistersStore", "body": "تم تحديث حالة الطلب لديك الى تم الإستلام"}
+                payload = {"head": "Sisters Store", "body": "تم تحديث حالة الطلب لديك الى تم الإستلام"}
                 send_user_notification(user=user, payload=payload, ttl=1000)
         
     

@@ -20,15 +20,15 @@
         <div class="container h-full">
           <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
             <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
-              <span class="ltext-101 cl2 respon2"> مجموعة جديدة 2022 </span>
+              <span class="ltext-101 cl2 respon2"> مجموعة جديدة <script> document.write(new Date().getFullYear()); </script> </span>
             </div>
 
             <div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
-              <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">موسم جديد</h2>
+              <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">موسم جديد <br> بتصميمات عصرية</h2>
             </div>
 
             <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-              <a href="#" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+              <a href="{% url 'product_list' %}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                 تسوق الآن
               </a>
             </div>
@@ -40,7 +40,7 @@
         <div class="container h-full">
           <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
             <div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
-              <span class="ltext-101 cl2 respon2"> رجال موسم جديد </span>
+              <span class="ltext-101 cl2 respon2"> نساء موسم جديد </span>
             </div>
 
             <div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn" data-delay="800">
@@ -50,7 +50,7 @@
             </div>
 
             <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
-              <a href="#" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+              <a href="{% url 'product_list' %}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                 تسوق الآن
               </a>
             </div>
@@ -62,7 +62,7 @@
         <div class="container h-full">
           <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
             <div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
-              <span class="ltext-101 cl2 respon2"> مجموعة رجال 2022 </span>
+              <span class="ltext-101 cl2 respon2"> مجموعة نساء <script> document.write(new Date().getFullYear()); </script> </span>
             </div>
 
             <div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight" data-delay="800">
@@ -70,7 +70,7 @@
             </div>
 
             <div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
-              <a href="#" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+              <a href="{% url 'product_list' %}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                 تسوق الآن
               </a>
             </div>
@@ -89,11 +89,12 @@
         <!-- Block1 -->
         <div class="block1 wrap-pic-w">
           <img src="{% static 'images/banner-01.jpg' %}" alt="IMG-BANNER" />
-          <a href="#" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+          
+          <a href="{% url 'product_list' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
             <div class="block1-txt-child1 flex-col-l">
               <span class="block1-name ltext-102 trans-04 p-b-8"> نساء </span>
 
-              <span class="block1-info stext-102 trans-04"> ربيع 2022 </span>
+              <span class="block1-info stext-102 trans-04"> تزيني من متجرنا </span>
             </div>
 
             <div class="block1-txt-child2 p-b-4 trans-05">
@@ -108,11 +109,11 @@
         <div class="block1 wrap-pic-w">
           <img src="{% static 'images/banner-02.jpg' %}" alt="IMG-BANNER" />
 
-          <a href="product.html" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+          <a href="{% url 'product_list' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
             <div class="block1-txt-child1 flex-col-l">
-              <span class="block1-name ltext-102 trans-04 p-b-8"> رجال </span>
+              <span class="block1-name ltext-102 trans-04 p-b-8"> الموضه تتحدث </span>
 
-              <span class="block1-info stext-102 trans-04"> ربيع 2022 </span>
+              <span class="block1-info stext-102 trans-04"> كوني أنيقة دائما </span>
             </div>
 
             <div class="block1-txt-child2 p-b-4 trans-05">
@@ -127,13 +128,13 @@
         <div class="block1 wrap-pic-w">
           <img src="{% static 'images/banner-03.jpg' %}" alt="IMG-BANNER" />
 
-          <a href="product.html" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+          <a href="{% url 'product_list' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
             <div class="block1-txt-child1 flex-col-l">
               <span class="block1-name ltext-102 trans-04 p-b-8">
                 ملحقات
               </span>
 
-              <span class="block1-info stext-102 trans-04"> ترند جديد </span>
+              <span class="block1-info stext-102 trans-04"> ثورة جديدة بلباس جديد </span>
             </div>
 
             <div class="block1-txt-child2 p-b-4 trans-05">
@@ -150,35 +151,7 @@
 <section dir="rtl" class="bg0 p-t-23 p-b-140">
   <div class="container">
     <div class="p-b-10">
-      <h3 class="ltext-103 cl5 my-respon">نظرة عامة على المنتجات</h3>
-    </div>
-
-    <div class="flex-w flex-sb-m p-b-52">
-      <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-          جميع المنتجات
-        </button>
-
-        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-          نساء
-        </button>
-
-        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-          رجال
-        </button>
-
-        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-          حقائب
-        </button>
-
-        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-          أحذية
-        </button>
-
-        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-          ساعات
-        </button>
-      </div>
+      <h3 class="ltext-103 cl5 my-respon p-b-52">نظرة عامة على المنتجات</h3>
     </div>
 
     {% if not products %}
@@ -297,7 +270,13 @@
               <strong>₪{{product.price}}</strong>
               {% endif %}
             </span>
-
+            <div class="mt-3">
+              {% if product.status == 'Ended' %}
+              <strong class="text-dark">التوفر: <span class="text-danger"> <i class="fa-solid fa-circle-xmark"></i></span></strong>
+              {% else %}
+              <strong class="text-dark">التوفر: <span class="text-success"> <i class="fa-solid fa-circle-check"></i></span></strong>
+              {% endif %}
+            </div>
             <p class="stext-102 cl3 p-t-23 border-bottom pb-3">
               {{product.description|safe}}
             </p>
@@ -309,18 +288,8 @@
                   <div class="size-203 flex-c-m respon6">الألوان:</div>
 
                   <div class="size-204 respon6-next">
-                      {% for color in product.color.all %}
-                      <span class="badge badge-pill badge-light">{{color}}</span>
-                      {% endfor %}
-                  </div>
-              </div>
-              
-              <div class="flex-w flex-r-m p-b-10">
-                  <div class="size-203 flex-c-m respon6">المقاسات:</div>
-
-                  <div class="size-204 respon6-next">
-                      {% for size in product.size.all %}
-                      <span style="background-color: #a29bfe;" class="badge badge-pill">{{size}}</span>
+                      {% for color in product.productinfo_set.all %}
+                      <span class="badge badge-pill badge-light">{{color.color}}</span>
                       {% endfor %}
                   </div>
               </div>

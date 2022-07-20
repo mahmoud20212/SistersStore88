@@ -1,0 +1,39 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block content %}
+<!-- Start Breadcrumb -->
+<div dir="rtl" class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            خدمات آخرى 
+        </span>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<section class="bg0 p-t-23 p-b-140">
+    <div dir="rtl" class="container">
+        <div class="p-b-10 mb-5">
+            <h3 class="ltext-103 cl5">خدمات آخرى</h3>
+        </div>
+        <div class="all-info">
+            <div class="section-1">
+                <h3 class="mb-5 cl5">خاصية الإشعارات</h3>
+                <p>
+                    نقدم في متجرنا سسترز ستور خاصية الإشعارات التي تمكن الزبون من الإطلاع على آخر التطورات للطلب الخاص به. ولتفعيل هذه الخاصية كل ما عليك فعله فقط هو الإتجاه الى حسابي ثم الإعدادات ثم الضغط على ” تفعيل ” من خانة إدارة الإشعارات.
+                </p>
+            </div>
+            <div class="section-2 mt-5">
+                <h3 class="mb-5 cl5">تتبع الطلب</h3>
+                <p>
+                    نقدم في متجرنا سسترز ستور إمكانية تتبع الطلب الخاص بالزبون عند شراء منتج بأحد الطرق الدفع المدعومة لدينا. ولتتبع طلبك كل ما عليك فعله فقط الإنتقال الى حسابي ثم طلباتي ثم الضغط على ”عرض التفاصيل” (لآخر طلب قمت بإجراءه) ثم ستظهر لك جميع معلومات الطلب الخاص بك في نافذه جديدة.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

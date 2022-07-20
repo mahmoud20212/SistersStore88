@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils import timezone
-from .models import Cart, Product, Category, Order, OrderDone, Favorite, Coupon, FAQ
+from .models import Cart, Product, Category, Order, OrderDone, Favorite, Coupon, FAQ, Color, ProductInfo
 from django.contrib.auth.models import User
 from .forms import NewComment, ContactForm
 from django.views import View
@@ -35,27 +35,6 @@ def favorite_number(request):
     return 0
 
 # ============================================
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
-YOUR_DOMAIN = 'http://127.0.0.1:8000/'
-
-class CreateCheckoutSessionView(View):
-    def post(self, request, *args, **kwargs):
-        # price = Price.objects.get(id=self.kwargs["pk"])
-        YOUR_DOMAIN = "http://127.0.0.1:8000"  # change in production
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[
-                {
-                    'price': 200,
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=YOUR_DOMAIN + '/success/',
-            cancel_url=YOUR_DOMAIN + '/cancel/',
-        )
-        return redirect(checkout_session.url)
 
 def index(request):
     products = Product.objects.all().order_by('?')[:12]
@@ -85,6 +64,27 @@ def faqs(request):
         'favorite_number': favorite_number(request),
     }
     return render(request, 'store/faqs.html', context)
+
+def payment_methods(request):
+    context = {
+        'cart_items': cart_items(request),
+        'favorite_number': favorite_number(request),
+    }
+    return render(request, 'store/payment_methods.html', context)
+
+def other(request):
+    context = {
+        'cart_items': cart_items(request),
+        'favorite_number': favorite_number(request),
+    }
+    return render(request, 'store/other.html', context)
+
+def our_policy(request):
+    context = {
+        'cart_items': cart_items(request),
+        'favorite_number': favorite_number(request),
+    }
+    return render(request, 'store/our_policy.html', context)
 
 def about(request):
     context = {
@@ -120,21 +120,25 @@ def product_list(request):
     status = request.GET.get('status')
     tag = request.GET.get('tag')
     if sort == 'l2h':
-        products = Product.objects.order_by('price')
+        products = Product.objects.order_by('price').exclude(discount__gt=0)
     elif sort == 'h2l':
-        products = Product.objects.order_by('-price')
+        products = Product.objects.order_by('-price').exclude(discount__gt=0)
     elif price == '50':
-        products = Product.objects.filter(price__lt=50)
+        products = Product.objects.filter(price__lt=50).exclude(discount__gt=0)
     elif price == '100':
-        products = Product.objects.filter(Q(price__gte=50) & Q(price__lt=100))
+        products = Product.objects.filter(Q(price__gte=50) & Q(price__lt=100)).exclude(discount__gt=0)
     elif price == '150':
-        products = Product.objects.filter(Q(price__gte=100) & Q(price__lt=150))
+        products = Product.objects.filter(Q(price__gte=100) & Q(price__lt=150)).exclude(discount__gt=0)
     elif price == '200':
-        products = Product.objects.filter(Q(price__gte=150) & Q(price__lt=200))
+        products = Product.objects.filter(Q(price__gte=150) & Q(price__lt=200)).exclude(discount__gt=0)
     elif price == '201':
-        products = Product.objects.filter(price__gte=200)
+        products = Product.objects.filter(price__gte=200).exclude(discount__gt=0)
     elif status == 'new':
         products = Product.objects.filter(status='New')
+    elif status == 'ended':
+        products = Product.objects.filter(status='Ended')
+    elif status == 'sale':
+        products = Product.objects.filter(status='Sale')
     elif category != None:
         products = Product.objects.filter(category__name=category)
     elif color != None:
@@ -211,7 +215,7 @@ def product_detail(request, pk):
     else:
         comment_form = NewComment()
 
-    # paginator
+    # paginator comments
     paginator = Paginator(comments, 5)
     page = request.GET.get('page')
     try:
@@ -221,8 +225,24 @@ def product_detail(request, pk):
     except EmptyPage:
         comments = paginator.page(paginator.num_page)
 
+    color = request.GET.get('color')
+    size = None
+    if color:
+        try:
+            color = Color.objects.get(color=color)
+            productinfo = ProductInfo.objects.filter(product=product, color=color)
+            if productinfo.exists():
+                size = productinfo[0].size.all()
+            else:
+                messages.warning(request, 'هذا اللون غير متوفر.')
+                return HttpResponseRedirect(reverse('product_detail', args=[pk]))
+        except Color.DoesNotExist:
+            messages.warning(request, 'هذا اللون غير متوفر.')
+            return HttpResponseRedirect(reverse('product_detail', args=[pk]))
 
     context = {
+        'size': size,
+        'color_cc': color,
         'product': product,
         'cart_items': cart_items(request),
         'comments': comments,
@@ -341,12 +361,12 @@ def processOrder(request):
                 else:
                     product_price = i.product.price
 
-                myDoneOrder = OrderDone.objects.create(order=order, image=i.product.image, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity)
+                myDoneOrder = OrderDone.objects.create(order=order, image=i.product.image, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity, total=i.get_total)
                 myDoneOrder.save()
             
             Cart.objects.filter(order=order).delete()
             superusers = User.objects.filter(is_superuser=True)
-            payload = {"head": "SistersStore", "body": f" قام المستخدم {order.customer} بطلب طلب جديد. "}
+            payload = {"head": "Sisters Store", "body": f" قام المستخدم {order.customer} بطلب طلب جديد. "}
             send_user_notification(user=superusers[0], payload=payload, ttl=1000)
             
             messages.success(request, 'تمت عمليت الشحن بنجاح... يمكنك الآن رؤية الطلبات الخاصة بك.')
@@ -450,12 +470,12 @@ def paiement_when_recieving(request):
                     else:
                         product_price = i.product.price
 
-                    myDoneOrder = OrderDone.objects.create(order=order, image=i.product.image, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity)
+                    myDoneOrder = OrderDone.objects.create(order=order, image=i.product.image, product=i.product.name, product_price=product_price, color=i.color, size=i.size, quantity=i.quantity, total=i.get_total)
                     myDoneOrder.save()
                 
                 Cart.objects.filter(order=order).delete()
                 superusers = User.objects.filter(is_superuser=True)
-                payload = {"head": "SistersStore", "body": f" قام المستخدم {order.customer} بطلب طلب جديد. "}
+                payload = {"head": "Sisters Store", "body": f" قام المستخدم {order.customer} بطلب طلب جديد. "}
                 send_user_notification(user=superusers[0], payload=payload, ttl=1000)
                 messages.success(request, 'تمت العملية بنجاح... يمكنك الآن رؤية الطلبات الخاصة بك.')
                 return HttpResponseRedirect(reverse('profile'))
@@ -492,4 +512,29 @@ def paypal_payment(request):
 
     return render(request, 'store/payment/paypal_payment.html', context)
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
+YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 
+class CreateCheckoutSessionView(View):
+    def post(self, request, *args, **kwargs):
+        # price = Price.objects.get(id=self.kwargs["pk"])
+        YOUR_DOMAIN = "http://127.0.0.1:8000"  # change in production
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price': 200,
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/success/',
+            cancel_url=YOUR_DOMAIN + '/cancel/',
+        )
+        return redirect(checkout_session.url)
+
+
+
+
+
+        

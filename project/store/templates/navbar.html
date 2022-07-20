@@ -6,8 +6,9 @@
     .main-menu-m a{
         font-size: 18px !important;
     }
-    i{
-        font-size: 16px;
+    .logo-mobile img{
+        max-width: 100%;
+        right: 0;
     }
 </style>
 <header dir="rtl" class="header-v4">
@@ -17,7 +18,11 @@
         <div class="top-bar">
             <div class="content-topbar flex-sb-m h-full container">
                 <div class="left-top-bar">
-                    شحن مجاني للطلبات القياسية التي تزيد عن 100 دولار
+                    {% if user.is_authenticated %}
+                        أهلا بك {{user}} في متجرنا.
+                    {% else %}
+                        SISTERS STORE
+                    {% endif %}
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
@@ -27,7 +32,6 @@
                     {% else %}
                     <a href="{% url 'login' %}" class="flex-c-m trans-04 p-lr-25">تسجيل الدخول</a>
                     {% endif %}
-                    <a href="{% url 'faqs' %}" class="flex-c-m trans-04 p-lr-25"> الأسئلة الشائعة </a>
                 </div>
             </div>
         </div>
@@ -35,8 +39,8 @@
         <div class="wrap-menu-desktop">
             <nav class="limiter-menu-desktop container">
                 <!-- Logo desktop -->
-                <a style="font-size: 20px;" href="{% url 'index' %}" class="logo text-dark">
-                    <span><strong>SISTERS</strong> STORE</span>
+                <a href="{% url 'index' %}" class="logo">
+                    <img src="{% static 'images/icons/logo-01.jpg' %}" alt="IMG-LOGO">
                 </a>
 
                 <!-- Menu desktop -->
@@ -85,23 +89,25 @@
     <div class="wrap-header-mobile">
         <!-- Logo moblie -->
         <div class="logo-mobile">
-            <a class="text-dark" style="font-size: 24px;" href="{% url 'index' %}"><span><strong>SISTER</strong> STORE</span></a>
+            <a href="{% url 'index' %}">
+                <img src="{% static 'images/icons/logo-01.jpg' %}" alt="IMG-LOGO">
+            </a>
         </div>
 
         <!-- Icon header -->
         <div class="wrap-icon-header flex-w flex-r-m m-r-15">
             <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search mr-3">
-                <i style="font-size: 24px !important;" class="zmdi zmdi-search"></i>
+                <i class="zmdi zmdi-search"></i>
             </div>
 
             <a href="{% url 'cart' %}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart mr-3"
                 data-notify="{% if cart_items %}{{cart_items}}{% else %}0{% endif %}">
-                <i style="font-size: 24px !important;" class="zmdi zmdi-shopping-cart"></i>
+                <i class="zmdi zmdi-shopping-cart"></i>
             </a>
 
             <a href="{% url 'favorite' %}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti ml-3 mr-3"
                 data-notify="{% if favorite_number %}{{favorite_number}}{% else %}0{% endif %}">
-                <i style="font-size: 24px !important;" class="zmdi zmdi-favorite-outline"></i>
+                <i class="zmdi zmdi-favorite-outline"></i>
             </a>
         </div>
 
@@ -118,7 +124,11 @@
         <ul class="topbar-mobile">
             <li>
                 <div class="left-top-bar">
-                    شحن مجاني للطلبات القياسية التي تزيد عن 100 دولار
+                    {% if user.is_authenticated %}
+                        أهلا بك {{user}} في متجرنا.
+                    {% else %}
+                        SISTERS STORE
+                    {% endif %}
                 </div>
             </li>
 
@@ -130,7 +140,6 @@
                     {% else %}
                     <a href="{% url 'login' %}" class="flex-c-m p-lr-10 trans-04">تسجيل الدخول</a>
                     {% endif %}
-                    <a href="{% url 'faqs' %}" class="flex-c-m p-lr-10 trans-04"> الأسئلة الشائعة </a>
                 </div>
             </li>
         </ul>

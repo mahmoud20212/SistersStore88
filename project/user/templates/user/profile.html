@@ -1,6 +1,9 @@
 {% extends 'base_generic.html' %}
 {% load webpush_notifications %}
 {% block content %}
+<head>
+    {% webpush_header %}
+</head>
 <style>
     th {
         text-align: center !important;
@@ -15,156 +18,174 @@
         font-size: 16px !important;
     }
 </style>
+<!-- Start Breadcrumb -->
 <div dir="rtl" class="container">
-    <div class="row py-5">
-        <div class="col-md-3">
-            <div class="list-group mb-5" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home"><i class="fa-solid fa-address-card"></i> ملفي الشخصي </a>
-                <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile"><i class="fa-solid fa-box-archive"></i> طلباتي </a>
-                <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings"><i class="fa-solid fa-gears"></i> الإعدادات </a>
-            </div>
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            الرئيسية
+            <i class="fa fa-angle-left m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            حسابي
+        </span>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+<section class="bg0 p-t-23 p-b-140">
+    <div dir="rtl" class="container">
+        <div class="p-b-10 mb-5">
+            <h3 class="ltext-103 cl5">حسابي</h3>
         </div>
-        <div class="col-md-9">
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
-                    <div style="border: 1px solid #ddd; border-radius: 3px;" class="py-4">
-                        <legend class="form-title text-dark" align="center">
-                            ملفي الشخصي
-                        </legend>
-                        <hr />
-                        <form class="form1" method="POST" action="">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-sm mb-3 mt-3">
-                                    <label class="stext-102 cl3" for="username"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.username}}" readonly/>
-                                </div>
-                                <div class="col-sm mb-3 mt-3">
-                                    <label class="stext-102 cl3" for="email"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="email" value="{{user.email}}" readonly/>
-                                </div>
-                                <div class="w-100"></div>
-                                <div class="col-sm mb-3">
-                                    <label class="stext-102 cl3" for="first_name">الإسم الأول</label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="first_name" type="text" value="{% if u_form.first_name.value %} {{u_form.first_name.value}} {% endif %}" />
-                                    <span class="text-danger">{{u_form.errors.first_name}}</span>
-                                </div>
-                                <div class="col-sm mb-3">
-                                    <label class="stext-102 cl3" for="last_name">الإسم الأخير</label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="last_name" type="text" value="{% if u_form.last_name.value %} {{u_form.last_name.value}} {% endif %}" />
-                                    <span class="text-danger">{{u_form.errors.last_name}}</span>
-                                </div>
-                                <div class="w-100"></div>
-                                <div class="col-sm mb-3">
-                                    <label for="color"><i class="fa-solid fa-globe"></i> الدولة </label>
-                                    <div class="">
-                                        <div class="rs1-select2 bor8 bg0">
-                                            <select class="js-select2" name="country" required>
-                                                <option {% if not user.customer.country %} selected {% endif %} disabled>اختر الدولة</option>
-                                                {% for country in countries %}
-                                                    {% if country == user.customer.country %}
-                                                    <option value="{{country.id}}" selected>{{country}}</option>
-                                                    {% else %}
-                                                    <option value="{{country.id}}">{{country}}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                            <div class="dropDownSelect2"></div>
-                                        </div>
-                                    </div>
-                                    <span class="text-danger">{{c_form.errors.country}}</span>
-                                </div>
-                                <div class="col-sm mb-3">
-                                    <label for="color"><i class="fa-solid fa-city"></i> المدينة </label>
-                                    <div class="">
-                                        <div class="rs1-select2 bor8 bg0">
-                                            <select class="js-select2" name="city" required>
-                                                <option {% if not user.customer.city %} selected {% endif %} disabled>اختر المدينة</option>
-                                                {% for city in cities %}
-                                                    {% if city == user.customer.city %}
-                                                    <option value="{{city.id}}" selected>{{city}}</option>
-                                                    {% else %}
-                                                    <option value="{{city.id}}">{{city}}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                            <div class="dropDownSelect2"></div>
-                                        </div>
-                                    </div>
-                                    <span class="text-danger">{{c_form.errors.city}}</span>
-                                </div>
-                                <div class="w-100"></div>
-                                <div class="col-sm mb-3">
-                                    <label class="stext-102 cl3" for="location"><i class="fa-solid fa-location-dot"></i> عنوان السكن </label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="location" type="text" value="{% if user.customer.location %} {{user.customer.location}} {% endif %}" />
-                                    <span class="text-danger">{{c_form.errors.location}}</span>
-                                </div>
-                                <div class="col-sm mb-3">
-                                    <label class="stext-102 cl3" for="phone_number"><i class="fa-solid fa-phone"></i> رقم الهاتف </label>
-                                    <input dir="ltr" class="size-111 bor8 stext-102 cl2 p-lr-20 text-right" name="phone_number" type="tel" value="{% if user.customer.phone_number %} {{user.customer.phone_number}} {% endif %}" />
-                                    <span class="text-danger">{{c_form.errors.phone_number}}</span>
-                                </div>
-                                
-                            </div>
-                            <div class="text-center my-5">
-                                <button type="submit" class="btn btn-primary">
-                                    تحديث ملفي الشخصي
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-group mb-5" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home"><i class="fa-solid fa-address-card"></i> ملفي الشخصي </a>
+                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile"><i class="fa-solid fa-box-archive"></i> طلباتي </a>
+                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings"><i class="fa-solid fa-gears"></i> الإعدادات </a>
                 </div>
-                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                    {% if not orders %}
-                    <div style="border-style: solid; border-radius: 3px;" class="text-center p-4 comment">
-                        <h5 class="mb-0">لا يوجد أي طلبات تمت.</h5>
-                    </div>
-                    {% else %}
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
                         <div style="border: 1px solid #ddd; border-radius: 3px;" class="py-4">
-                            <legend class="form-title text-dark" align="center">
-                            طلباتي
+                            <legend class="form-title text-dark text-center">
+                                ملفي الشخصي
                             </legend>
                             <hr />
-                            <div class="form1 text-center">
-                                {% for order in orders %}
-                                <div style="border-radius: 3px;" class="row bg-light mb-3 py-2">
-                                    <div class="col-sm p-1">
-                                        <h5>الطلب ({{forloop.counter}})</h5>
+                            <form class="form1" method="POST" action="">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm mb-3 mt-3">
+                                        <label class="stext-102 cl3" for="username"><i class="fa-solid fa-user"></i> إسم المستخدم </label>
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="text" value="{{user.username}}" readonly/>
                                     </div>
-                                    <div class="col-sm p-1">
-                                        <a class="btn btn-primary" href="{% url 'order' order.pk %}">عرض التفاصيل <i class="fa-solid fa-eye"></i></a>
+                                    <div class="col-sm mb-3 mt-3">
+                                        <label class="stext-102 cl3" for="email"><i class="fa-regular fa-envelope"></i> البريد الإلكتروني </label>
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20 bg-light" type="email" value="{{user.email}}" readonly/>
                                     </div>
+                                    <div class="w-100"></div>
+                                    <div class="col-sm mb-3">
+                                        <label class="stext-102 cl3" for="first_name">الإسم الأول</label>
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="first_name" type="text" value="{% if u_form.first_name.value %} {{u_form.first_name.value}} {% endif %}" />
+                                        <span class="text-danger">{{u_form.errors.first_name}}</span>
+                                    </div>
+                                    <div class="col-sm mb-3">
+                                        <label class="stext-102 cl3" for="last_name">الإسم الأخير</label>
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="last_name" type="text" value="{% if u_form.last_name.value %} {{u_form.last_name.value}} {% endif %}" />
+                                        <span class="text-danger">{{u_form.errors.last_name}}</span>
+                                    </div>
+                                    <div class="w-100"></div>
+                                    <div class="col-sm mb-3">
+                                        <label for="color"><i class="fa-solid fa-globe"></i> الدولة </label>
+                                        <div class="">
+                                            <div class="rs1-select2 bor8 bg0">
+                                                <select class="js-select2" name="country" required>
+                                                    <option {% if not user.customer.country %} selected {% endif %} disabled>اختر الدولة</option>
+                                                    {% for country in countries %}
+                                                        {% if country == user.customer.country %}
+                                                        <option value="{{country.id}}" selected>{{country}}</option>
+                                                        {% else %}
+                                                        <option value="{{country.id}}">{{country}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="dropDownSelect2"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger">{{c_form.errors.country}}</span>
+                                    </div>
+                                    <div class="col-sm mb-3">
+                                        <label for="color"><i class="fa-solid fa-city"></i> المدينة </label>
+                                        <div class="">
+                                            <div class="rs1-select2 bor8 bg0">
+                                                <select class="js-select2" name="city" required>
+                                                    <option {% if not user.customer.city %} selected {% endif %} disabled>اختر المدينة</option>
+                                                    {% for city in cities %}
+                                                        {% if city == user.customer.city %}
+                                                        <option value="{{city.id}}" selected>{{city}}</option>
+                                                        {% else %}
+                                                        <option value="{{city.id}}">{{city}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="dropDownSelect2"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger">{{c_form.errors.city}}</span>
+                                    </div>
+                                    <div class="w-100"></div>
+                                    <div class="col-sm mb-3">
+                                        <label class="stext-102 cl3" for="location"><i class="fa-solid fa-location-dot"></i> عنوان السكن </label>
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" name="location" type="text" value="{% if user.customer.location %} {{user.customer.location}} {% endif %}" />
+                                        <span class="text-danger">{{c_form.errors.location}}</span>
+                                    </div>
+                                    <div class="col-sm mb-3">
+                                        <label class="stext-102 cl3" for="phone_number"><i class="fa-solid fa-phone"></i> رقم الهاتف </label>
+                                        <input dir="ltr" class="size-111 bor8 stext-102 cl2 p-lr-20 text-right" name="phone_number" type="tel" value="{% if user.customer.phone_number %} {{user.customer.phone_number}} {% endif %}" />
+                                        <span class="text-danger">{{c_form.errors.phone_number}}</span>
+                                    </div>
+                                    
                                 </div>
-                                {% endfor %}
-                            </div>
+                                <div class="text-center my-5">
+                                    <button type="submit" class="btn btn-primary">
+                                        تحديث ملفي الشخصي
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-                    <div style="border: 1px solid #ddd; border-radius: 3px;" class="text-center py-4">  
-                        <legend class="form-title text-dark" align="center">
-                            الإعدادات
-                        </legend>
-                        <hr>
-                        <div class="form1">
-                            <p style="text-align: right;" class="alert alert-info">
-                                <i class="fa-solid fa-circle-info"></i> تأكد من تفعيل الإشعارات لتصلك دائما.
-                            </p>
-                            <div class="row">
-                                <div class="col-sm p-1">
-                                    <h5>إدارة الإشعارات</h5>
+                    </div>
+                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                        {% if not orders %}
+                        <div style="border-style: solid; border-radius: 3px;" class="text-center p-4 comment">
+                            <h5 class="mb-0">لا يوجد أي طلبات تمت.</h5>
+                        </div>
+                        {% else %}
+                            <div style="border: 1px solid #ddd; border-radius: 3px;" class="py-4">
+                                <legend class="form-title text-dark text-center">
+                                طلباتي
+                                </legend>
+                                <hr />
+                                <div class="form1 text-center">
+                                    {% for order in orders %}
+                                    <div style="border-radius: 3px;" class="row bg-light mb-3 py-2">
+                                        <div class="col-sm p-1">
+                                            <h5>الطلب ({{forloop.counter}})</h5>
+                                        </div>
+                                        <div class="col-sm p-1">
+                                            <a class="btn btn-primary" href="{% url 'order' order.pk %}">عرض التفاصيل <i class="fa-solid fa-eye"></i></a>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                <div class="col-sm p-1">
-                                    {% webpush_button with_class="btn btn-primary" %}
-                                </div>
-                                <div class="w-100"></div>
-                                <div class="col-sm p-1">
-                                    <h5>تغير كلمة مرور الحساب</h5>
-                                </div>
-                                <div class="col-sm p-1">
-                                    <a href="{% url 'change_password' %}" class="btn btn-primary">
-                                        تغير كلمة المرور <i class="fa-solid fa-arrows-rotate"></i>
-                                    </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                        <div style="border: 1px solid #ddd; border-radius: 3px;" class="text-center py-4">  
+                            <legend class="form-title text-dark text-center">
+                                الإعدادات
+                            </legend>
+                            <hr>
+                            <div class="form1">
+                                <p style="text-align: right;" class="alert alert-info">
+                                    <i class="fa-solid fa-circle-info"></i> تأكد من تفعيل الإشعارات لتصلك دائما.
+                                </p>
+                                <div class="row">
+                                    <div class="col-sm p-1">
+                                        <h5>إدارة الإشعارات</h5>
+                                    </div>
+                                    <div class="col-sm p-1">
+                                        {% webpush_button with_class="btn btn-primary" %}
+                                    </div>
+                                    <div class="w-100"></div>
+                                    <div class="col-sm p-1">
+                                        <h5>تغير كلمة مرور الحساب</h5>
+                                    </div>
+                                    <div class="col-sm p-1">
+                                        <a href="{% url 'change_password' %}" class="btn btn-primary">
+                                            تغير كلمة المرور <i class="fa-solid fa-arrows-rotate"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -173,5 +194,5 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock content %}

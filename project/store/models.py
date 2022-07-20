@@ -66,8 +66,9 @@ class Product(models.Model):
     price = models.PositiveIntegerField()
     image = models.ImageField(upload_to ='photos/', blank=False)
     status = models.CharField(max_length=50, choices=CHOOSE, blank=True, null=True)
-    size = models.ManyToManyField(Size)
-    color = models.ManyToManyField(Color)
+    # size = models.ManyToManyField(Size)
+    # color = models.ManyToManyField(Color)
+    # available_number = models.IntegerField(validators=[MinValueValidator(0)], null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], null=True, blank=True)
     description = RichTextField()
@@ -86,6 +87,12 @@ class Product(models.Model):
             return int(self.price - (self.price * (self.discount / 100)))
         else:
             return False
+
+class ProductInfo(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True)
+    size = models.ManyToManyField(Size)
+    # available_number = models.IntegerField(validators=[MinValueValidator(0)], null=True)
 
 class ProductPhoto(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='photos') # product.photos.all مثال  <model>_set.all بدل  related_name يستخدم 
@@ -198,6 +205,7 @@ class OrderDone(models.Model):
     color = models.CharField(max_length=50, null=True)
     size = models.CharField(max_length=50, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
+    total = models.IntegerField(default=0, null=True, blank=True)
     date_added = models.DateTimeField(default=timezone.now)
 
 class Favorite(models.Model):
